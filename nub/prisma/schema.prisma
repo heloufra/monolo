@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id               String    @id @default(cuid())
+  name             String
+  surname          String
+  email            String    @unique
+  password         String
+  phone            String    @unique
+  refreshToken     String?
+  twoFactorSecret  String?
+  twoFactorEnabled Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+
+model Client {
+  id               String    @id @default(cuid())
+  name             String
+  surname          String?
+  email            String    @unique
+  otp              String
+  phone            String?    @unique
+  picture          String?
+  toDelete         Boolean   @default(false)
+  notified         Boolean   @default(false)
+  notifiedMedia    String    @default("email")
+  dataConsent      Boolean   @default(true)
+  verfied          Boolean   @default(false)
+  address          Address[] @relation("ClientAddress")
+  orders           order[]   @relation("ClientOrders")
+  refreshToken     String?
+  twoFactorSecret  String?
+  twoFactorEnabled Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Vendor {
+  id               String        @id @default(cuid())
+  type             VENDOR_TYPE
+  status           VENDOR_STATUS
+  name             String
+  email            String        @unique
+  password         String
+  phone            String        @unique
+  address          Address[]     @relation("VendorAddress")
+  orders           order[]       @relation("VendorOrders")
+  products         product[]     @relation("VendorProduct")
+  refreshToken     String?
+  twoFactorSecret  String?
+  twoFactorEnabled Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Courier {
+  id               String         @id @default(cuid())
+  name             String
+  surname          String
+  status           COURIER_STATUS
+  email            String         @unique
+  phone            String         @unique
+  password         String
+  orders           order[]        @relation("CourierOrders")
+  refreshToken     String?
+  twoFactorSecret  String?
+  twoFactorEnabled Boolean        @default(false)
+  address          Address?       @relation("CourierAddress")
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  street    String?
+  city      String?
+  country   String?
+  zip       String?
+  address   String
+  name      String
+  toDelete  Boolean  @default(false)
+  clientId  String?
+  client    Client?  @relation("ClientAddress", fields: [clientId], references: [id])
+  vendorId  String?
+  vendor    Vendor?  @relation("VendorAddress", fields: [vendorId], references: [id])
+  courierId String?  @unique
+  courier   Courier? @relation("CourierAddress", fields: [courierId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model product {
+  id          String           @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  images      String[]
+  inStock     Int
+  category    PRODUCT_CATEGORY
+  vendorId    String
+  vendor      Vendor           @relation("VendorProduct", fields: [vendorId], references: [id])
+  itemOrders  orderItem[]      @relation("ProductItems")
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model order {
+  id        String       @id @default(cuid())
+  status    ORDER_STATUS
+  clientId  String
+  client    Client       @relation("ClientOrders", fields: [clientId], references: [id])
+  vendorId  String
+  vendor    Vendor       @relation("VendorOrders", fields: [vendorId], references: [id])
+  items     orderItem[]  @relation("OrderItems")
+  courierId String?
+  courier   Courier?     @relation("CourierOrders", fields: [courierId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model orderItem {
+  id        String   @id @default(cuid())
+  quantity  Int
+  productId String
+  product   product  @relation("ProductItems", fields: [productId], references: [id])
+  orderId   String
+  order     order    @relation("OrderItems", fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PRODUCT_CATEGORY {
+  FOOD
+  DRINK
+  CLOTHING
+  ELECTRONICS
+  OTHER
+}
+
+enum ORDER_STATUS {
+  PENDING
+  IN_PROGRESS
+  DELIVERED
+  CANCELLED
+}
+
+enum VENDOR_TYPE {
+  RESTAURANT
+  SHOP
+  OTHER
+}
+
+enum CLIENT_STATUS {
+  ACTIVE
+  INACTIVE
+}
+
+enum CLIENT_TYPE {
+  REGULAR
+  PREMIUM
+}
+
+enum VENDOR_STATUS {
+  WORKINGTAKEAWAY
+  WORKINGDELIVERY
+  CLOSED
+}
+
+enum COURIER_STATUS {
+  AVAILABLE
+  BUSY
+  OFFLINE
+}
