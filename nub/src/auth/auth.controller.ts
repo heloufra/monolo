@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { EmailSignUpDto } from './dto/email-signup.dto';
+import { EmailSignInDto } from './dto/email-signin.dto';
 import { VerifyEmailOtpDTO } from './dto/verify-email-otp';
 
 
@@ -9,18 +9,16 @@ import { VerifyEmailOtpDTO } from './dto/verify-email-otp';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register/email')
-  create(@Body() body: CreateAuthDto) {
-    /* email with name */
-    this.authService.registerEmail(body);
+  @Post('signup/email')
+  create(@Body() body: EmailSignUpDto) {
+    this.authService.signupEmail(body);
 
   }
 
-  @Post('login')
-  login(@Body() body: any) {
-    /* phone number or email */
+  @Post('signin/email')
+  login(@Body() body: EmailSignInDto) {
     try {
-      return this.authService.loginEmail(body);
+      return this.authService.signinEmail(body);
     } catch (error) {
       return error;
     }
@@ -28,33 +26,6 @@ export class AuthController {
 
   @Post('verifyOTP')
   verifyOTP(@Body() body: VerifyEmailOtpDTO) {
-    /* phone number or email with OTP */
     return this.authService.verifyOTPEmail(body);
-  }
-
-  @Post('google/login')
-  googleLogin(@Body() body: any) {
-    /* google login */
-
-    // send token body.token to google to get user details
-    const obj = {
-      email: body.email,
-      name: body.name,
-    };
-    return this.authService.loginEmail(body);
-
-  }
-
-  @Post('google/Singup')
-  googleSignup(@Body() body: any) {
-    /* google login */
-
-    // send token body.token to google to get user details
-    const obj = {
-      email: body.email,
-      name: body.name,
-    };
-
-    this.authService.registerEmail(body);
   }
 }
