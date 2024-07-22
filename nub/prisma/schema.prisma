@@ -1,17 +1,20 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  directUrl         = env("DIRECT_URL")
+  directUrl = env("DIRECT_URL")
+    schemas           = ["public", "auth"]
 }
 
 enum UserRole {
   CUSTOMER
   DELIVERY_PERSON
   ADMIN
+    @@schema("auth") 
 }
 
 enum OrderStatus {
@@ -21,12 +24,14 @@ enum OrderStatus {
   OUT_FOR_DELIVERY
   DELIVERED
   CANCELLED
+    @@schema("auth") 
 }
 
 enum NotificationPreference {
   EMAIL
   SMS
   NONE
+    @@schema("auth") 
 }
 
 model User {
@@ -46,6 +51,7 @@ model User {
   settings     Settings?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  @@schema("auth") 
 }
 
 model Restaurant {
@@ -63,6 +69,7 @@ model Restaurant {
   addresses    Address[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  @@schema("auth") 
 }
 
 model Dish {
@@ -77,6 +84,7 @@ model Dish {
   orderItems   OrderItem[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+    @@schema("auth") 
 }
 
 model Order {
@@ -92,6 +100,7 @@ model Order {
   orderItems       OrderItem[]
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
+    @@schema("auth") 
 }
 
 model OrderItem {
@@ -101,6 +110,7 @@ model OrderItem {
   dish     Dish   @relation(fields: [dishId], references: [id])
   orderId  String
   order    Order  @relation(fields: [orderId], references: [id])
+    @@schema("auth") 
 }
 
 model Review {
@@ -113,6 +123,7 @@ model Review {
   user         User       @relation(fields: [userId], references: [id])
   restaurantId String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+    @@schema("auth") 
 }
 
 model Address {
@@ -129,6 +140,7 @@ model Address {
   user         User?       @relation(fields: [userId], references: [id])
   restaurantId String?
   restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+    @@schema("auth") 
 }
 
 model Settings {
@@ -138,6 +150,7 @@ model Settings {
   darkMode               Boolean                @default(false)
   enableDataCollection   Boolean                @default(true)
   user                   User                   @relation(fields: [userId], references: [id])
+    @@schema("auth") 
 }
 
 // model admin {
