@@ -1,0 +1,16 @@
+set up supabase authentication
+end points
+set up storage 
+order app code
+starts crafting user interface
+
+
+
+
+curl -X POST 'https://kssfnqsexxkbkuvwoddr.supabase.co/auth/v1/signup' \
+-H "apikey: $SKEY" \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "someone@email.com",
+  "password": "iJRLDnVkFSJPwKaTuBcy"
+}'
