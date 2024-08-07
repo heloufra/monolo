@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { SupabaseAuthGuard } from './auth/guards/supa.guard';
 import { RolesGuard } from './auth/guards/role.guard';
+import { SettingsModule } from './settings/settings.module';
 
 
 @Module({
@@ -18,7 +19,7 @@ import { RolesGuard } from './auth/guards/role.guard';
     isGlobal: true,
   }), PrismaModule, ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', 'public'),
-  }), UserModule
+  }), UserModule, SettingsModule
   ],
   controllers: [AppController],
   providers: [    {
