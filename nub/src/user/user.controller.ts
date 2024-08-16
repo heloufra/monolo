@@ -28,6 +28,7 @@ export class UserController {
   @Get('me')
   async getUser(@GetCurrentUser() user: any) {
     // get the user information
+    return this.userService.getMe(user);
   }
 
   /*
