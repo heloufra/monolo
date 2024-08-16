@@ -1,11 +1,11 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('CUSTOMER', 'DELIVERY_PERSON', 'ADMIN');
+CREATE TYPE "userrole" AS ENUM ('CUSTOMER', 'DELIVERY_PERSON', 'ADMIN', 'RESTAURANT');
 
 -- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED');
+CREATE TYPE "orderstatus" AS ENUM ('PENDING', 'CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED');
 
 -- CreateEnum
-CREATE TYPE "NotificationPreference" AS ENUM ('EMAIL', 'SMS', 'NONE');
+CREATE TYPE "notificationpreference" AS ENUM ('EMAIL', 'SMS', 'NONE');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -14,8 +14,7 @@ CREATE TABLE "users" (
     "email" TEXT,
     "phoneNumber" TEXT,
     "otp" TEXT,
-    "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER',
-    "refreshToken" TEXT,
+    "role" "userrole" NOT NULL DEFAULT 'CUSTOMER',
     "picture" TEXT,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
@@ -27,14 +26,13 @@ CREATE TABLE "users" (
 CREATE TABLE "restaurants" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
+    "address" TEXT,
     "email" TEXT,
     "phoneNumber" TEXT,
-    "refreshToken" TEXT,
     "picture" TEXT,
-    "rating" DOUBLE PRECISION NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "rating" DOUBLE PRECISION,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "restaurants_pkey" PRIMARY KEY ("id")
 );
@@ -57,7 +55,7 @@ CREATE TABLE "dishes" (
 -- CreateTable
 CREATE TABLE "orders" (
     "id" TEXT NOT NULL,
-    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "orderstatus" NOT NULL DEFAULT 'PENDING',
     "total" DOUBLE PRECISION NOT NULL,
     "customerId" TEXT NOT NULL,
     "deliveryPersonId" TEXT,
@@ -114,11 +112,11 @@ CREATE TABLE "addresses" (
 CREATE TABLE "settings" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "notificationPreference" "NotificationPreference" NOT NULL DEFAULT 'EMAIL',
+    "notificationPreference" "notificationpreference" NOT NULL DEFAULT 'EMAIL',
     "darkMode" BOOLEAN NOT NULL DEFAULT false,
     "enableDataCollection" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "settings_pkey" PRIMARY KEY ("id")
 );

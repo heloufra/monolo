@@ -12,7 +12,7 @@ import {
 
 /*
  * for updating user email and phone number we take the request body and update the user information using supabasd api
- */
+*/
 
 @Controller('user')
 export class UserController {
@@ -33,7 +33,7 @@ export class UserController {
 
   /*
    * for updating name and user picture url
-   */
+  */
   @Roles(['costumer', 'delivery_person', 'admin'])
   @Put('update')
   async updateUser(
