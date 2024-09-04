@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:olo/main.dart';
 import 'package:olo/pagess/auth/otp.dart';
-import 'package:olo/services/authService.dart';
 import 'package:olo/components/apple.dart';
 import 'package:olo/components/continue.dart';
 import 'package:olo/components/google.dart';
@@ -20,10 +18,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final emailController = TextEditingController();
-  final AuthService authService = AuthService();
-  bool showError = false;
-  String errorMessage = '';
+  final _emailController = TextEditingController();
   bool enable = false;
   bool isLoading = false;
 
@@ -42,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
         await supabase.auth.signInWithOtp(
-        email: emailController.text.trim(),
+        email: _emailController.text.trim(),
         shouldCreateUser: false
       );
 
@@ -52,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  OtpPage(email: emailController.text.trim(), isRegister: false)),
+                  OtpPage(email: _emailController.text.trim(), isRegister: false)),
         );
       }
     } on AuthException catch (error) {
@@ -77,44 +72,12 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> signUserIn() async {
-    if (enable) {
-      setState(() {
-        enable = false;
-        isLoading = true;
-      });
-      var (success, msg) = await authService.sendOtp(emailController.text);
-      setState(() {
-        isLoading = false;
-      });
-
-      if (success) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  OtpPage(email: emailController.text, isRegister: false)),
-        );
-      } else {
-        setState(() {
-          showError = true;
-          errorMessage = msg;
-          // errorMessage = 'Failed to send OTP';
-        });
-      }
-    }
-  }
 
   Future<void> signInWithGoogle() async {
-    showToast(
-        context, "Still", "Still need to be done", ToastificationType.error);
   }
 
   emailChange(String email) {
-    setState(() {
-      showError = false;
-      errorMessage = '';
-    });
+
     if (email.isEmpty) {
       setState(() {
         enable = false;
@@ -140,11 +103,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    emailController.dispose();
-    setState(() {
-      showError = false;
-      errorMessage = '';
-    });
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -159,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             const SizedBox(height: 50),
 
-            // logo
             const Image(
               image: AssetImage('assets/images/logo.png'),
               height: 150,
@@ -172,7 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(255, 15, 13, 26)),
             ),
+
             const SizedBox(height: 16),
+
             const Text(
               'Please enter your email address below to get started.',
               textAlign: TextAlign.center,
@@ -183,23 +143,13 @@ class _LoginPageState extends State<LoginPage> {
 
             // username textfield
             EmailTextField(
-              controller: emailController,
+              controller: _emailController,
               hintText: 'Email',
               obscureText: false,
               onChanged: emailChange,
             ),
+
             const SizedBox(height: 16),
-            // show error
-            showError
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Text(
-                      errorMessage,
-                      style: const TextStyle(color: Colors.red),
-                      textAlign: TextAlign.left,
-                    ),
-                  )
-                : const SizedBox(),
 
             const SizedBox(height: 24),
             const Text(
