@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:olo/main.dart';
 import 'package:olo/pagess/auth/otp.dart';
 import 'package:olo/services/authService.dart';
 import 'package:olo/components/apple.dart';
@@ -6,7 +8,9 @@ import 'package:olo/components/continue.dart';
 import 'package:olo/components/google.dart';
 import 'package:olo/components/email_textfield.dart';
 import 'package:olo/pagess/auth/register.dart';
-
+import 'package:olo/utlis/toast.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,7 +20,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final emailController = TextEditingController();
   final AuthService authService = AuthService();
   bool showError = false;
@@ -24,6 +27,55 @@ class _LoginPageState extends State<LoginPage> {
   bool enable = false;
   bool isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _signInSupabse() async {
+    if (!enable) return;
+
+    setState(() {
+      enable = false;
+      isLoading = true;
+    });
+
+    try {
+        await supabase.auth.signInWithOtp(
+        email: emailController.text.trim(),
+        shouldCreateUser: false
+      );
+
+      if (mounted) {
+        showToast(context, "Check Your Email", "we have sent OTP", ToastificationType.success);
+         Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  OtpPage(email: emailController.text.trim(), isRegister: false)),
+        );
+      }
+    } on AuthException catch (error) {
+      if (mounted) {
+        if (error.statusCode == "422") {
+          showToast(context, "Error", "no user with this email exists", ToastificationType.error);
+        } else {
+          showToast(context, "Error", error.message, ToastificationType.error);
+        }
+        
+      }
+    } catch (error) {
+      if (mounted) {
+        showToast(context, "Error", "Unexpected error occurred, try later.", ToastificationType.error);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   Future<void> signUserIn() async {
     if (enable) {
@@ -39,7 +91,9 @@ class _LoginPageState extends State<LoginPage> {
       if (success) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => OtpPage(email: emailController.text, isRegister: false)),
+          MaterialPageRoute(
+              builder: (context) =>
+                  OtpPage(email: emailController.text, isRegister: false)),
         );
       } else {
         setState(() {
@@ -52,11 +106,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> signInWithGoogle() async {
-
-    await authService.signInWithGoogle();
-
-
+    showToast(
+        context, "Still", "Still need to be done", ToastificationType.error);
   }
+
   emailChange(String email) {
     setState(() {
       showError = false;
@@ -178,12 +231,17 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-      
       bottomNavigationBar: BottomAppBar(
         height: 110,
         color: Colors.transparent,
         child: Continue(
-                    onTap: enable? () async { await signUserIn(); } : null, enable: enable, textbutton: 'Continue'),
+            onTap: enable
+                ? () async {
+                    await _signInSupabse();
+                  }
+                : null,
+            enable: enable,
+            textbutton: 'Continue'),
         elevation: 0,
       ),
     );
