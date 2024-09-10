@@ -3,7 +3,9 @@ import { SettingsService } from './settings.service';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { Roles } from 'src/common/role.decorator';
 import { GetCurrentUser } from 'src/common/user.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('settings')
 @Controller('settings')
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}

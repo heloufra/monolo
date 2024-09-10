@@ -1,13 +1,17 @@
-import { IsString, IsNotEmpty, IsBoolean } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsNotEmpty, IsBoolean, IsEnum, IsIn } from 'class-validator';
+const NotificationPreference = ['EMAIL', 'SMS', 'NONE'];
 
 export class UpdateSettingDto {
-    @IsString()
-    @IsNotEmpty()
-    notificationPreference: string;
+    @ApiProperty()
+    @IsIn(NotificationPreference)
+    notificationPreference: 'EMAIL' | 'SMS' | 'NONE';
 
+    @ApiProperty()
     @IsBoolean()
     darkMode: boolean;
 
+    @ApiProperty()
     @IsBoolean()
     enableDataCollection: boolean;
 }

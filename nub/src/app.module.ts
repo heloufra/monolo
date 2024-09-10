@@ -11,6 +11,13 @@ import { APP_GUARD } from '@nestjs/core';
 import { SupabaseAuthGuard } from './auth/guards/supa.guard';
 import { RolesGuard } from './auth/guards/role.guard';
 import { SettingsModule } from './settings/settings.module';
+import { AddressModule } from './address/address.module';
+import { RestaurantModule } from './restaurant/restaurant.module';
+import { MenuModule } from './menu/menu.module';
+import { OrdersModule } from './orders/orders.module';
+import { ReviewsModule } from './reviews/reviews.module';
+
+
 
 
 @Module({
@@ -19,7 +26,7 @@ import { SettingsModule } from './settings/settings.module';
     isGlobal: true,
   }), PrismaModule, ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', 'public'),
-  }), UserModule, SettingsModule
+  }),  UserModule, SettingsModule, AddressModule, RestaurantModule, MenuModule, OrdersModule, ReviewsModule
   ],
   controllers: [AppController],
   providers: [    {
@@ -30,6 +37,7 @@ import { SettingsModule } from './settings/settings.module';
     provide: APP_GUARD,
     useClass: RolesGuard,
   },
-  AppService],
+  AppService,
+  ],
 })
 export class AppModule {}

@@ -20,7 +20,7 @@ export class SettingsService {
         userId: user.id,
       },
       data: {
-        // notificationPreference: updateSettingDto.notificationPreference,
+        notificationPreference: updateSettingDto.notificationPreference,
         darkMode: updateSettingDto.darkMode,
         enableDataCollection: updateSettingDto.enableDataCollection,
       }
