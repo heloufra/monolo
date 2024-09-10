@@ -81,6 +81,7 @@ model Dish {
   orderItems   OrderItem[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  reviews      Review[]
   @@map("dishes")
 }
 
@@ -120,6 +121,8 @@ model Review {
   user         User       @relation(fields: [userId], references: [id])
   restaurantId String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  dishId       String?
+  dish         Dish? @relation(fields: [dishId], references: [id])
   @@map("reviews")
 }
 
