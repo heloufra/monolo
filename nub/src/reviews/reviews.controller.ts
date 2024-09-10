@@ -12,7 +12,9 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { Roles } from 'src/common/role.decorator';
 import { GetCurrentUser } from 'src/common/user.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('reviews')
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
@@ -27,9 +29,16 @@ export class ReviewsController {
   }
 
   @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reviewsService.findOne(id);
+  @Get('/restaurant/:id')
+  findRestaurantReview(@Param('id') id: string) {
+    return this.reviewsService.findRestaurantReview(id);
+  }
+
+
+  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Get('/dish/:id')
+  findDishReview(@Param('id') id: string) {
+    return this.reviewsService.findDishRview(id);
   }
 
   @Patch(':id')
