@@ -12,7 +12,7 @@ import {
 
 /*
  * for updating user email and phone number we take the request body and update the user information using supabasd api
-*/
+ */
 
 @Controller('user')
 export class UserController {
@@ -21,26 +21,25 @@ export class UserController {
   @Roles(['admin'])
   @Get('all')
   async getAllUsers() {
-    // get all users
+    return await this.userService.findAll();
   }
 
   @Roles(['costumer', 'delivery_person', 'admin'])
   @Get('me')
   async getUser(@GetCurrentUser() user: any) {
-
     return await this.userService.findOne(user);
   }
 
   /*
    * for updating name and user picture url
-  */
+   */
   @Roles(['costumer', 'delivery_person', 'admin'])
   @Put('update')
   async updateUser(
     @GetCurrentUser() user: any,
     @Body() data: UserUpdateDataDto,
   ) {
-    // update the user information
+    return await this,this.userService.updateUser(user, data);
   }
 
   /*
@@ -52,7 +51,7 @@ export class UserController {
     @GetCurrentUser() user: any,
     @Body() data: UserUpdateEmailDto,
   ) {
-    // update the user information
+    return await this.userService.updateUserEmail(user, data);
   }
 
   /*
@@ -64,7 +63,7 @@ export class UserController {
     @GetCurrentUser() user: any,
     @Body() data: UserUpdatePhonelDto,
   ) {
-    // update the user information
+    return await this.userService.updateUsePhone(user, data);
   }
 
   /*
@@ -76,7 +75,7 @@ export class UserController {
     @GetCurrentUser() user: any,
     @Body() data: UserVerifyEmailDto,
   ) {
-    // update the user information
+    return await this.userService.verifyUserEmail(user, data);
   }
 
   /*
@@ -88,6 +87,6 @@ export class UserController {
     @GetCurrentUser() user: any,
     @Body() data: UserVerifyPhoneDto,
   ) {
-    // update the user information
+    return await this.verifyPhone(user, data);
   }
 }

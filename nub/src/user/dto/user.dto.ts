@@ -7,7 +7,7 @@ export class UserUpdateDataDto {
 
     @IsString()
     @IsNotEmpty()
-    picture: string;
+    pictureURL: string;
 }
 
 
