@@ -35,7 +35,7 @@ export class UserController {
     @GetCurrentUser() user: any,
     @Body() data: UserUpdateDataDto,
   ) {
-    return await this, this.userService.updateUser(user, data);
+    return await this.userService.updateUser(user, data);
   }
 
   /*
