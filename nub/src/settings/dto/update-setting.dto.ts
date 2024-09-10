@@ -1,4 +1,13 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateSettingDto } from './create-setting.dto';
+import { IsString, IsNotEmpty, IsBoolean } from 'class-validator';
 
-export class UpdateSettingDto extends PartialType(CreateSettingDto) {}
+export class UpdateSettingDto {
+    @IsString()
+    @IsNotEmpty()
+    notificationPreference: string;
+
+    @IsBoolean()
+    darkMode: boolean;
+
+    @IsBoolean()
+    enableDataCollection: boolean;
+}
