@@ -129,13 +129,13 @@ model Review {
 model Address {
   id           String      @id @default(uuid())
   name         String
-  street       String
-  city         String
-  state        String
-  country      String
-  postalCode   String
-  latitude     Float
-  longitude    Float
+  street       String?
+  city         String?
+  state        String?
+  country      String?
+  postalCode   String?
+  latitude     Float?
+  longitude    Float?
   userId       String?
   user         User?       @relation(fields: [userId], references: [id])
   restaurantId String?
