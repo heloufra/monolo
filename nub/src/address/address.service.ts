@@ -6,7 +6,7 @@ import {
   CreateAddressDto,
 } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'nestjs-prisma';
 import { GetCurrentUser } from 'src/common/user.decorator';
 
 @Injectable()
@@ -113,7 +113,13 @@ export class AddressService {
       },
     });
   }
-
+  /**
+   *  only admins can create addresses for other users
+   * @param user 
+   * @param createAddressDto 
+   * @param id 
+   * @returns 
+   */
   async createWithId(
     user: any,
     createAddressDto: CreateAddressDto,
@@ -124,6 +130,7 @@ export class AddressService {
         id: id,
       },
     });
+    
     if (!usero) {
       throw new HttpException('User not found', 404);
     }
@@ -148,6 +155,14 @@ export class AddressService {
     });
   }
 
+  /**
+   * restaurants addresses are available to everyone to see 
+   * and other users addresses are only available to themselves and admins. 
+   * I am going to add an option for delivery person to see other users addresses is not implemented yet in case it is needed.
+   * @param user 
+   * @param id 
+   * @returns 
+   */
   async findManyForUser(user: any, id: string) {
     if (user.id === id) {
       return await this.prismaService.address.findMany({
@@ -192,11 +207,12 @@ export class AddressService {
         id: id,
       },
     });
+
     if (!address) {
       throw new HttpException('Address not found', 404);
     }
 
-    if (user.id !== address.userId) {
+    if (user.id !== address.userId && user.user_metadata.role !== 'admin') {
       throw new HttpException('Unauthorized', 401);
     }
 
@@ -210,8 +226,6 @@ export class AddressService {
       },
     });
 
-  
-
     return await newAddress;
   }
 
@@ -222,7 +236,11 @@ export class AddressService {
       },
     });
 
-    if (address.userId !== user.id) {
+    if (!address) {
+      throw new HttpException('Address not found', 404);
+    }
+
+    if (address.userId !== user.id && user.user_metadata.role !== 'admin') {
       throw new HttpException('Unauthorized', 401);
     }
 
