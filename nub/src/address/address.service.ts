@@ -91,7 +91,11 @@ export class AddressService {
         ...createAddressDto,
         user: {
           connect: {
+<<<<<<< HEAD
             id: user.id,
+=======
+            id: user.id, 
+>>>>>>> 40dcb1360f10cfe0b455ff94cd43e5f0f31e6b6f
           },
         },
       },
@@ -108,34 +112,55 @@ export class AddressService {
         user: {
           connect: {
             id: user.id,
+<<<<<<< HEAD
           },
+=======
+          }
+>>>>>>> 40dcb1360f10cfe0b455ff94cd43e5f0f31e6b6f
         },
       },
     });
   }
 
+<<<<<<< HEAD
   async createWithId(
     user: any,
     createAddressDto: CreateAddressDto,
     id: string,
   ) {
+=======
+  async createWithId(user: any, createAddressDto: CreateAddressDto, id: string) {
+>>>>>>> 40dcb1360f10cfe0b455ff94cd43e5f0f31e6b6f
     const usero = await this.prismaService.user.findUnique({
       where: {
         id: id,
       },
     });
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 40dcb1360f10cfe0b455ff94cd43e5f0f31e6b6f
     if (!usero) {
       throw new HttpException('User not found', 404);
     }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 40dcb1360f10cfe0b455ff94cd43e5f0f31e6b6f
     return await this.prismaService.address.create({
       data: {
         ...createAddressDto,
         user: {
           connect: {
             id: id,
+<<<<<<< HEAD
           },
+=======
+          }
+>>>>>>> 40dcb1360f10cfe0b455ff94cd43e5f0f31e6b6f
         },
       },
     });
