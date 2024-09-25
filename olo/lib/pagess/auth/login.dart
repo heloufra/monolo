@@ -43,11 +43,12 @@ class _LoginPageState extends State<LoginPage> {
 
       if (mounted) {
         showToast(context, "Check Your Email", "we have sent OTP", ToastificationType.success);
+        String email = _emailController.text.trim();
          Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  OtpPage(email: _emailController.text.trim(), isRegister: false)),
+                  OtpPage(email: email, isRegister: false)),
         );
       }
     } on AuthException catch (error) {
@@ -103,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    // _emailController.dispose();
     super.dispose();
   }
 

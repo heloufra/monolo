@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olo/services/authService.dart';
+import 'package:olo/main.dart';
 import 'package:olo/components/apple.dart';
 import 'package:olo/components/continue.dart';
 import 'package:olo/components/email_textfield.dart';
@@ -7,6 +7,9 @@ import 'package:olo/components/google.dart';
 import 'package:olo/components/name_textfield.dart';
 import 'package:olo/pagess/auth/login.dart';
 import 'package:olo/pagess/auth/otp.dart';
+import 'package:olo/utlis/toast.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({super.key});
@@ -18,36 +21,46 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final usernameController = TextEditingController();
-  final AuthService authService = AuthService();
-  bool showError = false;
-  String errorMessage = '';
   bool enable = false;
   bool isLoading = false;
 
-  Future<void> signUserUp() async {
-    if (enable) {
-      setState(() {
-        enable = false;
-        isLoading = true;
-      });
-      var (success, msg) = await authService.register(
-          usernameController.text, emailController.text);
+  Future<void> _signUpSupabse() async {
+    if (!enable) return;
 
-      setState(() {
-        isLoading = false;
-      });
+    setState(() {
+      enable = false;
+      isLoading = true;
+    });
 
-      if (success) {
+    try {
+      await supabase.auth.signInWithOtp(
+          email: emailController.text.trim(),
+          data: {"name": usernameController.text.trim(), "role": "CUSTOMER"});
+
+      if (mounted) {
+        showToast(context, "Check Your Email", "we have sent OTP",
+            ToastificationType.success);
+        String email = emailController.text.trim();
         Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  OtpPage(email: emailController.text, isRegister: true)),
+                  OtpPage(email: email, isRegister: true)),
         );
-      } else {
+      }
+    } on AuthException catch (error) {
+      if (mounted) {
+        showToast(context, "Error", error.message, ToastificationType.error);
+      }
+    } catch (error) {
+      if (mounted) {
+        showToast(context, "Error", "Unexpected error occurred, try later.",
+            ToastificationType.error);
+      }
+    } finally {
+      if (mounted) {
         setState(() {
-          showError = true;
-          errorMessage = msg;
+          isLoading = false;
         });
       }
     }
@@ -63,10 +76,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   emailChange(String email) {
-    setState(() {
-      showError = false;
-      errorMessage = '';
-    });
     if (email.isEmpty || usernameController.text.isEmpty) {
       setState(() {
         enable = false;
@@ -93,10 +102,6 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void dispose() {
     emailController.dispose();
-    setState(() {
-      showError = false;
-      errorMessage = '';
-    });
     super.dispose();
   }
 
@@ -147,19 +152,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: false,
                 onChanged: emailChange,
               ),
-              const SizedBox(height: 16),
 
-              // show error
-              showError
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Text(
-                        errorMessage,
-                        style: const TextStyle(color: Colors.red),
-                        textAlign: TextAlign.left,
-                      ),
-                    )
-                  : const SizedBox(),
+              const SizedBox(height: 16),
 
               const SizedBox(height: 24),
               const Text(
@@ -198,7 +192,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Continue(
             onTap: enable
                 ? () async {
-                    await signUserUp();
+                    await _signUpSupabse();
                   }
                 : null,
             enable: enable,
