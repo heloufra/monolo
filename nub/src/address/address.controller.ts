@@ -1,93 +1,99 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AddressService } from './address.service';
-import { CreateAddressDto } from './dto/create-address.dto';
+import  { AddressRegisterCoordinatesDto, AddressRegisterDto, CreateAddressCoordinatesDto, CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/role.decorator';
+import { GetCurrentUser } from 'src/common/user.decorator';
 
-/*
-    Prisma model to help me
-    model Address {
-      id           String      @id @default(cuid())
-      name         String
-      street       String
-      city         String
-      state        String
-      country      String
-      postalCode   String
-      latitude     Float
-      longitude    Float
-      userId       String?
-      user         User?       @relation(fields: [userId], references: [id])
-      restaurantId String?
-      restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
-      createdAt    DateTime    @default(now())
-      updatedAt    DateTime    @updatedAt
-      @@map("addresses")
-    }
+/**
+ * note: I need to add wall to prevent someone scrapping all users addresses.
  */
-
+@ApiTags('address')
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
-  /**
-   * 
-   * @param createAddressDto 
-   * @returns Address Entity
-   * 
-   *  create a new address record for the user
-   */
   @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
-  @Post()
-  create(@Body() createAddressDto: CreateAddressDto) {
-    return this.addressService.create(createAddressDto);
+  @Post('register')
+  async addressRegister(
+    @GetCurrentUser() user: any,
+    @Body() addressRegisterDto: AddressRegisterDto,
+  ) {
+    return await this.addressService.addressRegister(user, addressRegisterDto);
   }
 
-  /**
-   * 
-   * @returns array of Address entity
-   * 
-   * get all addresses of the user
-   */
   @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
-  @Get()
-  findAll() {
-    return this.addressService.findAll();
+  @Post('register/coordinates')
+  async addressRegistercoordinates(
+    @GetCurrentUser() user: any,
+    @Body() addressRegisterDto: AddressRegisterCoordinatesDto,
+  ) {
+    return await this.addressService.addressRegisterCoordinates(user, addressRegisterDto);
+  }
+
+  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Post('create')
+  async create(
+    @GetCurrentUser() user: any,
+    @Body() createAddressDto: CreateAddressDto,
+  ) {
+    return await this.addressService.create(user, createAddressDto);
+  }
+
+  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Post('create/coordinates')
+  async createCoordinates(
+    @GetCurrentUser() user: any,
+    @Body() createAddressDto: CreateAddressCoordinatesDto,
+  ) {
+    return await this.addressService.createCoordinates(user, createAddressDto);
+  }
+
+  @Roles(['admin'])
+  @Post('create/:id')
+  async createForUser(
+    @GetCurrentUser() user: any,
+    @Param('id') id: string,
+    @Body() createAddressDto: CreateAddressDto,
+  ) {
+    return await this.addressService.createWithId(user, createAddressDto, id);
   }
 
 
-  /**
-   * 
-   * @param id of address record
-   * @returns Address entity
-   */
   @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.addressService.findOne(id);
+  @Get('self')
+  async getAll(@GetCurrentUser() user: any) {
+    return await this.addressService.findAll(user);
   }
 
+  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Get('user/:id')
+  async findAllForUser(@GetCurrentUser() user: any, @Param('id') id: string) {
+    return await this.addressService.findManyForUser(user, id);
+  }
 
-  /**
-   * 
-   * @param id of address record
-   * @param updateAddressDto 
-   * @returns new updated address entity
-   */
   @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAddressDto: UpdateAddressDto) {
-    return this.addressService.update(id, updateAddressDto);
+  async update(
+    @GetCurrentUser() user: any,
+    @Param('id') id: string,
+    @Body() updateAddressDto: UpdateAddressDto,
+  ) {
+    return await this.addressService.update(user, id, updateAddressDto);
   }
 
-  /**
-   * 
-   * @param id of address record
-   * @returns nothing
-   */
   @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.addressService.remove(id);
+  async remove(@GetCurrentUser() user: any, @Param('id') id: string) {
+    return await this.addressService.remove(user, id);
   }
 }

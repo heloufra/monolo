@@ -81,6 +81,7 @@ model Dish {
   orderItems   OrderItem[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  reviews      Review[]
   @@map("dishes")
 }
 
@@ -120,19 +121,21 @@ model Review {
   user         User       @relation(fields: [userId], references: [id])
   restaurantId String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  dishId       String?
+  dish         Dish? @relation(fields: [dishId], references: [id])
   @@map("reviews")
 }
 
 model Address {
   id           String      @id @default(uuid())
   name         String
-  street       String
-  city         String
-  state        String
-  country      String
-  postalCode   String
-  latitude     Float
-  longitude    Float
+  street       String?
+  city         String?
+  state        String?
+  country      String?
+  postalCode   String?
+  latitude     Float?
+  longitude    Float?
   userId       String?
   user         User?       @relation(fields: [userId], references: [id])
   restaurantId String?

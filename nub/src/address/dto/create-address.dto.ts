@@ -1,39 +1,99 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+
+export class CreateAddressCoordinatesDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  street: string;
+
+  @ApiProperty()
+  @IsNumber()
+  latitude: number;
+
+  @ApiProperty()
+  @IsNumber()
+  longitude: number;
+}
 
 export class CreateAddressDto {
-    @IsString()
-    @IsNotEmpty()
-    name: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    street: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  street: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
-    city: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  city: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
-    state: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  state: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
-    country: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  country: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
-    postalCode: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  postalCode: string;
 
-    @IsNumber()
-    @IsOptional()
-    latitude: number;
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  latitude?: number;
 
-    @IsNumber()
-    @IsOptional()
-    longitude: number;
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  longitude?: number;
+}
+
+export class AddressRegisterDto {
+  @ApiProperty()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
+  address: CreateAddressDto;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  phone: string;
+}
+
+export class AddressRegisterCoordinatesDto {
+  @ApiProperty()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CreateAddressCoordinatesDto)
+  address: CreateAddressCoordinatesDto;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  phone: string;
 }

@@ -1,31 +1,253 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAddressDto } from './dto/create-address.dto';
+import { HttpException, Injectable } from '@nestjs/common';
+import {
+  AddressRegisterCoordinatesDto,
+  AddressRegisterDto,
+  CreateAddressCoordinatesDto,
+  CreateAddressDto,
+} from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { UserService } from 'src/user/user.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'nestjs-prisma';
+import { GetCurrentUser } from 'src/common/user.decorator';
 
 @Injectable()
 export class AddressService {
-  constructor(private readonly userService: UserService,
-    private readonly prismaService: PrismaService
-  ) { }
-  create(createAddressDto: CreateAddressDto) {
-    return 'This action adds a new address';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async addressRegisterCoordinates(
+    @GetCurrentUser() user: any,
+    addressRegisterDto: AddressRegisterCoordinatesDto,
+  ) {
+    if (user.user_metadata.role === 'restaurant') {
+      await this.prismaService.restaurant.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          addresses: {
+            create: addressRegisterDto.address,
+          },
+          phoneNumber: addressRegisterDto.phone,
+        },
+      });
+    } else {
+      await this.prismaService.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          addresses: {
+            create: addressRegisterDto.address,
+          },
+          phoneNumber: addressRegisterDto.phone,
+        },
+      });
+    }
   }
 
-  findAll() {
-    return `This action returns all address`;
+  async addressRegister(
+    @GetCurrentUser() user: any,
+    addressRegisterDto: AddressRegisterDto,
+  ) {
+    const address = await this.prismaService.address.create({
+      data: {
+        ...addressRegisterDto.address,
+      },
+    });
+    if (user.user_metadata.role === 'restaurant') {
+      await this.prismaService.restaurant.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          addresses: {
+            connect: {
+              id: address.id,
+            },
+          },
+          phoneNumber: addressRegisterDto.phone,
+        },
+      });
+    } else {
+      await this.prismaService.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          addresses: {
+            connect: {
+              id: address.id,
+            },
+          },
+          phoneNumber: addressRegisterDto.phone,
+        },
+      });
+      return await address;
+    }
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} address`;
+  async create(user: any, createAddressDto: CreateAddressDto) {
+    return await this.prismaService.address.create({
+      data: {
+        ...createAddressDto,
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
   }
 
-  update(id: string, updateAddressDto: UpdateAddressDto) {
-    return `This action updates a #${id} address`;
+  async createCoordinates(
+    user: any,
+    createAddressDto: CreateAddressCoordinatesDto,
+  ) {
+    return await this.prismaService.address.create({
+      data: {
+        ...createAddressDto,
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
+  }
+  /**
+   *  only admins can create addresses for other users
+   * @param user 
+   * @param createAddressDto 
+   * @param id 
+   * @returns 
+   */
+  async createWithId(
+    user: any,
+    createAddressDto: CreateAddressDto,
+    id: string,
+  ) {
+    const usero = await this.prismaService.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    
+    if (!usero) {
+      throw new HttpException('User not found', 404);
+    }
+
+    return await this.prismaService.address.create({
+      data: {
+        ...createAddressDto,
+        user: {
+          connect: {
+            id: id,
+          },
+        },
+      },
+    });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} address`;
+  async findAll(user: any) {
+    return await this.prismaService.address.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
+  }
+
+  /**
+   * restaurants addresses are available to everyone to see 
+   * and other users addresses are only available to themselves and admins. 
+   * I am going to add an option for delivery person to see other users addresses is not implemented yet in case it is needed.
+   * @param user 
+   * @param id 
+   * @returns 
+   */
+  async findManyForUser(user: any, id: string) {
+    if (user.id === id) {
+      return await this.prismaService.address.findMany({
+        where: {
+          userId: id,
+        },
+      });
+    }
+
+    const userAddressRequested = await this.prismaService.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!userAddressRequested) {
+      throw new HttpException('User not found', 404);
+    }
+
+    if (userAddressRequested.role === 'RESTAURANT') {
+      return await this.prismaService.address.findMany({
+        where: {
+          userId: id,
+        },
+      });
+    }
+
+    if (user.user_metadata.role === 'admin') {
+      return await this.prismaService.address.findMany({
+        where: {
+          userId: id,
+        },
+      });
+    }
+
+    throw new HttpException('Unauthorized', 401);
+  }
+
+  async update(user: any, id: string, updateAddressDto: UpdateAddressDto) {
+    const address = await this.prismaService.address.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!address) {
+      throw new HttpException('Address not found', 404);
+    }
+
+    if (user.id !== address.userId && user.user_metadata.role !== 'admin') {
+      throw new HttpException('Unauthorized', 401);
+    }
+
+    const newAddress = await this.prismaService.address.update({
+      where: {
+        id: id,
+        userId: user.id,
+      },
+      data: {
+        ...updateAddressDto,
+      },
+    });
+
+    return await newAddress;
+  }
+
+  async remove(user: any, id: string) {
+    const address = await this.prismaService.address.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!address) {
+      throw new HttpException('Address not found', 404);
+    }
+
+    if (address.userId !== user.id && user.user_metadata.role !== 'admin') {
+      throw new HttpException('Unauthorized', 401);
+    }
+
+    await this.prismaService.address.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 }

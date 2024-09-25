@@ -1,26 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Delete } from '@nestjs/common';
 import { SettingsService } from './settings.service';
-import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { Roles } from 'src/common/role.decorator';
+import { GetCurrentUser } from 'src/common/user.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('settings')
 @Controller('settings')
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
-  @Roles(['costumer', 'delivery_person', 'admin'])
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.settingsService.findOne(+id);
+  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Get()
+  async findOne(@GetCurrentUser() user: any) {
+    return await this.settingsService.findOne(user);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSettingDto: UpdateSettingDto) {
-    return this.settingsService.update(+id, updateSettingDto);
+  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Patch()
+  async update(@GetCurrentUser() user: any, @Body() updateSettingDto: UpdateSettingDto) {
+    return await this.settingsService.update(user, updateSettingDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.settingsService.remove(+id);
+  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Delete()
+  async remove(@GetCurrentUser() user: any) {
+    return await this.settingsService.remove(user);
   }
 }
