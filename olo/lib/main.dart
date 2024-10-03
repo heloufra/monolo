@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olo/pagess/auth/welcome.dart';
+import 'package:olo/pagess/home/vendorlist.dart';
+import 'package:olo/screens/screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:toastification/toastification.dart';
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
     return ToastificationWrapper(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const Welcome(),
+        home:  Screen(),
       ),
     );
   }

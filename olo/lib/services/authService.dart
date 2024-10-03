@@ -80,6 +80,7 @@ if (Platform.isIOS || Platform.isMacOS) {
       return (false, response.body);
     }
   }
+  
   Future<String> getJwtToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('jwt_token') ?? '';
