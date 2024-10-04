@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:olo/pagess/admin_dashboard/orders.dart';
 import 'package:olo/pagess/auth/welcome.dart';
 import 'package:olo/pagess/home/vendorlist.dart';
 import 'package:olo/screens/screen.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
     return ToastificationWrapper(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home:  Screen(),
+        home:  OrdersPage(),
       ),
     );
   }
