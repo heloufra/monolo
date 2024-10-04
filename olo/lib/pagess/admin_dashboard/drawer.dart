@@ -13,6 +13,9 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
+  bool isDeliveryAvailable = false;
+  bool acceptingOrders = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,28 +71,145 @@ class _DrawerPageState extends State<DrawerPage> {
       body: Container(
         color: Colors.white,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            customListTile(
-              context: context,
-              title: 'Orders',
-              page: const OrdersPage(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                customListTile(
+                  context: context,
+                  title: 'Orders',
+                  page: const OrdersPage(),
+                ),
+                customListTile(
+                  context: context,
+                  title: 'Availablity',
+                  page: const Availablity(),
+                ),
+                customListTile(
+                  context: context,
+                  title: 'Menu',
+                  page: const Menu(),
+                ),
+                customListTile(
+                  context: context,
+                  title: 'Settings',
+                  page: SettingsPage(),
+                )
+              ],
             ),
-            customListTile(
-              context: context,
-              title: 'Availablity',
-              page: const Availablity(),
+            const SizedBox(
+              height: 175,
             ),
-            customListTile(
-              context: context,
-              title: 'Menu',
-              page: const Menu(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.5, color: Colors.grey),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Delivering Available?",
+                            style: TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+                          Text(
+                            "Only Pick up.",
+                            style: TextStyle(
+                                color: Colors.grey[800], fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      Switch(
+                        value: isDeliveryAvailable,
+                        activeColor: const Color.fromARGB(255, 70, 118, 72),
+                        inactiveTrackColor: Colors.white,
+                        inactiveThumbColor: Colors.black,
+                        onChanged: (bool value) {
+                          setState(
+                            () {
+                              isDeliveryAvailable = value;
+                            },
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ),
-            customListTile(
-              context: context,
-              title: 'Settings',
-              page: SettingsPage(),
-            )
+            Container(
+              height: 79,
+              color: acceptingOrders
+                  ? const Color.fromARGB(255, 52, 90, 55)
+                  : const Color.fromARGB(255, 127, 53, 47),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 25,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromARGB(60, 255, 255, 255),
+                      ),
+                      child: Center(
+                        child: Container(
+                          height: 13,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          acceptingOrders ? 'Accepting Orders' : 'Paused',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          acceptingOrders
+                              ? 'Accepting new Orders'
+                              : 'Not accepting new Orders',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: IconButton(
+                        icon: Icon(
+                          acceptingOrders
+                              ? Icons.pause_outlined
+                              : Icons.play_arrow_sharp,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            acceptingOrders = !acceptingOrders;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
