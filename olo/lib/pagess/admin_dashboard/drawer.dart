@@ -97,9 +97,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 )
               ],
             ),
-            const SizedBox(
-              height: 175,
-            ),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -144,7 +142,7 @@ class _DrawerPageState extends State<DrawerPage> {
               ),
             ),
             Container(
-              height: 79,
+              height: 75,
               color: acceptingOrders
                   ? const Color.fromARGB(255, 52, 90, 55)
                   : const Color.fromARGB(255, 127, 53, 47),
