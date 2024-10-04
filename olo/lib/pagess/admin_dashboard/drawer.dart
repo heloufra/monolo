@@ -152,39 +152,46 @@ class _DrawerPageState extends State<DrawerPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 25,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromARGB(60, 255, 255, 255),
-                      ),
-                      child: Center(
-                        child: Container(
-                          height: 13,
+                    Row(
+                      children: [
+                        Container(
+                          width: 25,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white,
+                            color: Color.fromARGB(60, 255, 255, 255),
+                          ),
+                          child: Center(
+                            child: Container(
+                              height: 13,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          acceptingOrders ? 'Accepting Orders' : 'Paused',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          acceptingOrders
-                              ? 'Accepting new Orders'
-                              : 'Not accepting new Orders',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                acceptingOrders ? 'Accepting Orders' : 'Paused',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                acceptingOrders
+                                    ? 'Accepting new Orders'
+                                    : 'Not accepting new Orders',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
