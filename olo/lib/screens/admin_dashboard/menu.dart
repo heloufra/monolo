@@ -14,7 +14,6 @@ class _MenuState extends State<Menu> {
     return Scaffold(
       drawer: const Drawer(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        width: 270,
         child: DrawerPage(),
       ),
       appBar: AppBar(
