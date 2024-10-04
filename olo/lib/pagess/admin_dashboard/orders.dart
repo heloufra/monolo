@@ -14,7 +14,7 @@ class _OrdersPageState extends State<OrdersPage> {
     return Scaffold(
       drawer: const Drawer(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        width: 270,
+        width: 350,
         child: DrawerPage(),
       ),
       appBar: AppBar(
