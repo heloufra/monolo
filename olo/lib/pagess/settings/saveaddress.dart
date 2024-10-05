@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:olo/components/continue.dart';
 import 'package:olo/homepage.dart';
 import 'package:olo/pagess/settings/markEntrance.dart';
-import 'package:olo/services/clientService.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 
 class SaveAddressPage extends StatefulWidget {
@@ -19,7 +19,6 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final phoneController = TextEditingController();
-  final ClientService clientService = ClientService();
   late BitmapDescriptor markerIcon;
 
   bool showError = false;
@@ -118,24 +117,24 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
         enableSave = false;
       });
       // print(mapController.showMarkerInfoWindow(MarkerId('_currentLocation')));
-      var (success, msg) = await clientService.newAddressRegister(
-          nameController.text,
-          addressController.text,
-          phoneController.text,
-          _center.latitude,
-          _center.longitude);
+      // var (success, msg) = await clientService.newAddressRegister(
+      //     nameController.text,
+      //     addressController.text,
+      //     phoneController.text,
+      //     _center.latitude,
+      //     _center.longitude);
 
-      if (success) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
-        );
-      } else {
-        setState(() {
-          showError = true;
-          errorMessage = msg;
-        });
-      }
+      // if (success) {
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => MyHomePage()),
+      //   );
+      // } else {
+      //   setState(() {
+      //     showError = true;
+      //     errorMessage = msg;
+      //   });
+      // }
     }
   }
 
