@@ -8,7 +8,7 @@ Widget categoryList({
   required Widget page,
 }) {
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.only(bottom: 10.0),
     child: Container(
       decoration: BoxDecoration(
         color: Colors.white,

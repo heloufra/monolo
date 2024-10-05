@@ -28,7 +28,7 @@ class _CategoryItemsState extends State<CategoryItems> {
             IconButton(
               onPressed: () {},
               icon: const Icon(
-                Icons.border_color_outlined,
+                Icons.edit,
                 color: Colors.black,
                 size: 20,
               ),

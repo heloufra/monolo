@@ -32,6 +32,7 @@ class _MenuState extends State<Menu> {
           ),
         ),
         body: Container(
+          padding: const EdgeInsets.all(16.0),
           color: Colors.white,
           child: Column(
             children: [
