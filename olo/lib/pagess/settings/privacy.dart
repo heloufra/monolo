@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olo/pagess/auth/welcome.dart';
+import 'package:olo/screens/auth/welcome.dart';
 import 'package:olo/services/authService.dart';
 
 class Privacy extends StatefulWidget {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:olo/main.dart';
-import 'package:olo/pagess/auth/otp.dart';
+import 'package:olo/screens/auth/otp.dart';
 import 'package:olo/components/apple.dart';
 import 'package:olo/components/continue.dart';
 import 'package:olo/components/google.dart';
 import 'package:olo/components/email_textfield.dart';
-import 'package:olo/pagess/auth/register.dart';
+import 'package:olo/screens/auth/register.dart';
 import 'package:olo/utlis/toast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:toastification/toastification.dart';

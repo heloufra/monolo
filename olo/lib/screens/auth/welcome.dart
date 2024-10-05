@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:olo/pagess/auth/login.dart';
-import 'package:olo/pagess/auth/register.dart';
+import 'package:olo/screens/auth/login.dart';
+import 'package:olo/screens/auth/register.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({Key? key}) : super(key: key);

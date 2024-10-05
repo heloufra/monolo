@@ -3,7 +3,7 @@ import 'package:olo/homepage.dart';
 import 'package:olo/main.dart';
 import 'package:olo/pagess/settings/saveAddress.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/pagess/auth/login.dart';
+import 'package:olo/screens/auth/login.dart';
 import 'package:olo/utlis/toast.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
