@@ -14,7 +14,6 @@ class _AvailablityState extends State<Availablity> {
     return Scaffold(
       drawer: const Drawer(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        width: 270,
         child: DrawerPage(),
       ),
       appBar: AppBar(
