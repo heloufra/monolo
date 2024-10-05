@@ -36,6 +36,7 @@ class _CategoryItemsState extends State<CategoryItems> {
           ],
         ),
         body: Container(
+          padding: const EdgeInsets.all(10.0),
           color: Colors.white,
           child: Column(
             children: [
