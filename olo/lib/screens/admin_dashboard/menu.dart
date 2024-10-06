@@ -5,6 +5,8 @@ import 'package:olo/components/category_list.dart';
 import 'package:olo/screens/admin_dashboard/category_items.dart';
 import 'new_category.dart';
 
+String categoryName = 'Pizza';
+
 class Menu extends StatefulWidget {
   const Menu({super.key});
 
@@ -39,21 +41,22 @@ class _MenuState extends State<Menu> {
               categoryList(
                 context: context,
                 catImage: const Icon(Icons.local_pizza_sharp),
-                title: 'Pizza',
+                title: categoryName,
                 subtitle: '2 Items',
                 page: const CategoryItems(),
               ),
               addButton(
-                  context: context,
-                  title: 'New Category',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NewCategory(),
-                      ),
-                    );
-                  }),
+                context: context,
+                title: 'New Category',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NewCategory(),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
