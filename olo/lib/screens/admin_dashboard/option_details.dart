@@ -24,7 +24,7 @@ class _OptionDetailsState extends State<OptionDetails> {
           shadowColor: Colors.grey,
           leadingWidth: 25,
           title: Text(
-            options,
+            options.first,
             style: TextStyle(color: Colors.black),
           ),
         ),
@@ -85,7 +85,7 @@ class _OptionDetailsState extends State<OptionDetails> {
               TextField(
                 controller: _nameController1,
                 decoration: InputDecoration(
-                  hintText: options,
+                  hintText: options.first,
                   hintStyle:
                       TextStyle(color: Color.fromARGB(255, 209, 208, 208)),
                   focusedBorder: OutlineInputBorder(

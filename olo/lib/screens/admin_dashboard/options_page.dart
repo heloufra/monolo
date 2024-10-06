@@ -4,7 +4,7 @@ import 'package:olo/components/add_button.dart';
 import 'item_details.dart' show modifierName;
 import 'option_details.dart';
 
-String options = 'Normal';
+final List<String> options = ['Normal', 'Large', 'Extra Large'];
 double price = 0.0;
 
 class OptionsPage extends StatefulWidget {
@@ -36,7 +36,7 @@ class _OptionsPageState extends State<OptionsPage> {
           child: Column(
             children: [
               simpleListTile(
-                options,
+                options.first,
                 '$price Dhs',
                 () {
                   Navigator.push(

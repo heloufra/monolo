@@ -5,7 +5,6 @@ import 'options_page.dart';
 import 'category_items.dart' show itemName;
 
 String modifierName = 'Size';
-String options = 'Normal';
 
 class ItemDetails extends StatefulWidget {
   const ItemDetails({super.key});
@@ -15,6 +14,7 @@ class ItemDetails extends StatefulWidget {
 }
 
 class _ItemDetailsState extends State<ItemDetails> {
+  String concatenatedOptions = options.join(' - ');
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,7 +46,7 @@ class _ItemDetailsState extends State<ItemDetails> {
             children: [
               simpleListTile(
                 modifierName,
-                options,
+                concatenatedOptions,
                 () {
                   Navigator.push(
                     context,
