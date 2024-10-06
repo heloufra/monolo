@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:olo/pagess/home/vendorlist.dart';
-import 'package:olo/pagess/settings/profile.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -13,7 +12,6 @@ class _MyHomePageState extends State<MyHomePage> {
     VendorListPage(),
     OrdersScreen(),
     OrdersScreen(),
-
     NotificationsScreen(),
     ProfilePage(),
   ];

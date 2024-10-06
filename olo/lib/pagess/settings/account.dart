@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/pagess/settings/profile.dart';
 import 'package:olo/services/clientService.dart';
 import 'package:olo/types/User.dart';
 
@@ -122,10 +121,10 @@ class _AccountState extends State<Account> {
     );
 
     if (success) {
-               Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
-            );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfilePage()),
+      );
     } else {
       setState(() {
         showErrorSave = true;

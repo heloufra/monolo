@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'drawer.dart';
 import 'package:olo/components/add_button.dart';
 import 'package:olo/components/category_list.dart';
+import 'new_item.dart';
 
 class CategoryItems extends StatefulWidget {
   const CategoryItems({super.key});
@@ -50,7 +51,7 @@ class _CategoryItemsState extends State<CategoryItems> {
               addButton(
                 context: context,
                 title: 'New Item',
-                page: const DrawerPage(),
+                page: const NewItem(),
               ),
             ],
           ),

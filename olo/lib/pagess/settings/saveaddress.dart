@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/homepage.dart';
 import 'package:olo/pagess/settings/markEntrance.dart';
 
 import 'package:permission_handler/permission_handler.dart';
@@ -172,7 +171,10 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
                 onTap: (LatLng latLng) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => MapScreen(center: latLng,)),
+                    MaterialPageRoute(
+                        builder: (context) => MapScreen(
+                              center: latLng,
+                            )),
                   );
                 },
                 markers: {
