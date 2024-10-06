@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
 import 'package:olo/components/add_button.dart';
+import 'package:olo/components/save_button.dart';
 
 class NewCategory extends StatefulWidget {
   const NewCategory({super.key});
@@ -61,6 +62,8 @@ class _NewCategoryState extends State<NewCategory> {
                 controller: _nameController,
                 decoration: const InputDecoration(
                   hintText: 'Pizza',
+                  hintStyle:
+                      TextStyle(color: Color.fromARGB(255, 209, 208, 208)),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
                   ),
@@ -80,7 +83,15 @@ class _NewCategoryState extends State<NewCategory> {
               addButton(
                 context: context,
                 title: 'Upload Image',
-                page: const Menu(),
+                onPressed: () {
+                  // Handle upload image button tap
+                },
+              ),
+              Spacer(),
+              SaveButton(
+                onPressed: () {
+                  // Handle save button tap
+                },
               ),
             ],
           ),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'drawer.dart';
+import 'item_details.dart';
 import 'package:olo/components/add_button.dart';
 import 'package:olo/components/category_list.dart';
 import 'new_item.dart';
+import 'menu.dart' show categoryName;
+
+String itemName = 'Margarita';
 
 class CategoryItems extends StatefulWidget {
   const CategoryItems({super.key});
@@ -21,8 +24,8 @@ class _CategoryItemsState extends State<CategoryItems> {
           backgroundColor: Colors.white,
           shadowColor: Colors.grey,
           leadingWidth: 25,
-          title: const Text(
-            'Pizza',
+          title: Text(
+            categoryName,
             style: TextStyle(color: Colors.black),
           ),
           actions: [
@@ -44,15 +47,21 @@ class _CategoryItemsState extends State<CategoryItems> {
               categoryList(
                 context: context,
                 catImage: const Icon(Icons.local_pizza_outlined),
-                title: 'Margarita',
+                title: itemName,
                 subtitle: '32 Dhs',
-                page: const DrawerPage(),
+                page: const ItemDetails(),
               ),
               addButton(
-                context: context,
-                title: 'New Item',
-                page: const NewItem(),
-              ),
+                  context: context,
+                  title: 'New Item',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NewItem(),
+                      ),
+                    );
+                  }),
             ],
           ),
         ),

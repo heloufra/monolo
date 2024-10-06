@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Widget addButton({
   required BuildContext context,
   required String title,
-  required Widget page,
+  required VoidCallback onPressed,
 }) {
   return Container(
     decoration: BoxDecoration(
@@ -17,14 +17,7 @@ Widget addButton({
     child: Row(
       children: [
         IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => page,
-              ),
-            );
-          },
+          onPressed: onPressed,
           icon: const Icon(
             Icons.add,
             color: Colors.black,
