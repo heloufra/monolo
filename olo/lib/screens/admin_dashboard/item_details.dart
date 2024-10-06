@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import '/components/simple_list_tile.dart';
+import 'package:olo/components/add_button.dart';
+import 'options_page.dart';
 import 'category_items.dart' show itemName;
+
+String modifierName = 'Size';
+String options = 'Normal';
 
 class ItemDetails extends StatefulWidget {
   const ItemDetails({super.key});
@@ -34,7 +40,29 @@ class _ItemDetailsState extends State<ItemDetails> {
           ],
         ),
         body: Container(
+          padding: EdgeInsets.all(16),
           color: Colors.white,
+          child: Column(
+            children: [
+              simpleListTile(
+                modifierName,
+                options,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OptionsPage(),
+                    ),
+                  );
+                },
+              ),
+              addButton(
+                context: context,
+                title: 'New Modifier',
+                onPressed: () {},
+              ),
+            ],
+          ),
         ),
       ),
     );
