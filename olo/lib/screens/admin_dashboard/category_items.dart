@@ -49,10 +49,16 @@ class _CategoryItemsState extends State<CategoryItems> {
                 page: const DrawerPage(),
               ),
               addButton(
-                context: context,
-                title: 'New Item',
-                page: const NewItem(),
-              ),
+                  context: context,
+                  title: 'New Item',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NewItem(),
+                      ),
+                    );
+                  }),
             ],
           ),
         ),

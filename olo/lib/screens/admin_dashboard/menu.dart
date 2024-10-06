@@ -44,10 +44,16 @@ class _MenuState extends State<Menu> {
                 page: const CategoryItems(),
               ),
               addButton(
-                context: context,
-                title: 'New Category',
-                page: const NewCategory(),
-              ),
+                  context: context,
+                  title: 'New Category',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NewCategory(),
+                      ),
+                    );
+                  }),
             ],
           ),
         ),
