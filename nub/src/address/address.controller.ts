@@ -22,7 +22,7 @@ import { GetCurrentUser } from 'src/common/user.decorator';
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Post('register')
   async addressRegister(
     @GetCurrentUser() user: any,
@@ -31,7 +31,7 @@ export class AddressController {
     return await this.addressService.addressRegister(user, addressRegisterDto);
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Post('register/coordinates')
   async addressRegistercoordinates(
     @GetCurrentUser() user: any,
@@ -40,7 +40,7 @@ export class AddressController {
     return await this.addressService.addressRegisterCoordinates(user, addressRegisterDto);
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Post('create')
   async create(
     @GetCurrentUser() user: any,
@@ -49,7 +49,7 @@ export class AddressController {
     return await this.addressService.create(user, createAddressDto);
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Post('create/coordinates')
   async createCoordinates(
     @GetCurrentUser() user: any,
@@ -69,19 +69,19 @@ export class AddressController {
   }
 
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Get('self')
   async getAll(@GetCurrentUser() user: any) {
     return await this.addressService.findAll(user);
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Get('user/:id')
   async findAllForUser(@GetCurrentUser() user: any, @Param('id') id: string) {
     return await this.addressService.findManyForUser(user, id);
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Patch(':id')
   async update(
     @GetCurrentUser() user: any,
@@ -91,7 +91,7 @@ export class AddressController {
     return await this.addressService.update(user, id, updateAddressDto);
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Delete(':id')
   async remove(@GetCurrentUser() user: any, @Param('id') id: string) {
     return await this.addressService.remove(user, id);

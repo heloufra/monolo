@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:olo/homepage.dart';
-import 'package:olo/screens/admin_dashboard/orders.dart';
-import 'package:olo/screens/auth/saveaddress.dart';
 import 'package:olo/screens/auth/welcome.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

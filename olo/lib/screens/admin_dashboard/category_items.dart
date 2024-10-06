@@ -2,51 +2,56 @@ import 'package:flutter/material.dart';
 import 'drawer.dart';
 import 'package:olo/components/add_button.dart';
 import 'package:olo/components/category_list.dart';
-import 'package:olo/screens/admin_dashboard/category_items.dart';
-import 'new_category.dart';
+import 'new_item.dart';
 
-class Menu extends StatefulWidget {
-  const Menu({super.key});
+class CategoryItems extends StatefulWidget {
+  const CategoryItems({super.key});
 
   @override
-  State<Menu> createState() => _MenuState();
+  State<CategoryItems> createState() => _CategoryItemsState();
 }
 
-class _MenuState extends State<Menu> {
+class _CategoryItemsState extends State<CategoryItems> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        drawer: const Drawer(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          child: DrawerPage(),
-        ),
         appBar: AppBar(
           elevation: 0.5,
           backgroundColor: Colors.white,
           shadowColor: Colors.grey,
           leadingWidth: 25,
           title: const Text(
-            'Menu',
+            'Pizza',
             style: TextStyle(color: Colors.black),
           ),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.edit,
+                color: Colors.black,
+                size: 20,
+              ),
+            ),
+          ],
         ),
         body: Container(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(10.0),
           color: Colors.white,
           child: Column(
             children: [
               categoryList(
                 context: context,
-                catImage: const Icon(Icons.local_pizza_sharp),
-                title: 'Pizza',
-                subtitle: '2 Items',
-                page: const CategoryItems(),
+                catImage: const Icon(Icons.local_pizza_outlined),
+                title: 'Margarita',
+                subtitle: '32 Dhs',
+                page: const DrawerPage(),
               ),
               addButton(
                 context: context,
-                title: 'New Category',
-                page: const NewCategory(),
+                title: 'New Item',
+                page: const NewItem(),
               ),
             ],
           ),

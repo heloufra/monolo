@@ -172,7 +172,10 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
                 onTap: (LatLng latLng) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => MapScreen(center: latLng,)),
+                    MaterialPageRoute(
+                        builder: (context) => MapScreen(
+                              center: latLng,
+                            )),
                   );
                 },
                 markers: {

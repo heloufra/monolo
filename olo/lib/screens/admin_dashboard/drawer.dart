@@ -3,7 +3,7 @@ import 'orders.dart';
 import 'availablity.dart';
 import '../../pagess/settings/settings.dart';
 import 'menu.dart';
-import 'menu_list_tile.dart';
+import '../../components/menu_list_tile.dart';
 
 class DrawerPage extends StatefulWidget {
   const DrawerPage({super.key});
