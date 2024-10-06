@@ -1,23 +1,27 @@
-# Step 1: Use Node.js as the base image
-FROM node:18
+FROM node:18-alpine AS base
+RUN npm i -g pnpm
 
-# Step 2: Install pnpm globally
-RUN npm install -g pnpm
-
-# Step 3: Set the working directory inside the container
-WORKDIR /usr/src/app
-
-# Step 4: Copy package.json and pnpm-lock.yaml
+FROM base AS dependencies
+WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-
-# Step 5: Install dependencies using pnpm
+COPY prisma ./prisma
+COPY .env ./
 RUN pnpm install
+RUN pnpx prisma generate
 
-# Step 6: Copy the rest of the application code
+FROM base AS build
+WORKDIR /app
 COPY . .
+COPY --from=dependencies /app/node_modules ./node_modules
+# COPY --from=dependencies /app/node_modules/.prisma ./node_modules/.prisma
+RUN pnpm build
+RUN pnpm prune --prod
 
-# Step 7: Expose the port on which the NestJS app will run
-EXPOSE 3000
+FROM base AS deploy
+WORKDIR /app
+COPY --from=build /app/dist/ ./dist/
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/.env ./
 
-# Step 8: Start the application in development mode
-CMD ["pnpm", "run", "start:dev"]
+CMD [ "node", "dist/main.js" ]
