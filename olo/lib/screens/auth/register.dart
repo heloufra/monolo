@@ -51,6 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
     } on AuthException catch (error) {
       if (mounted) {
         showToast(context, "Error", error.message, ToastificationType.error);
+        print(error.message);
       }
     } catch (error) {
       if (mounted) {

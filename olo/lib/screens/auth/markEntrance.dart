@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/pagess/settings/saveaddress.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:olo/screens/auth/saveaddress.dart';
 
 class MapScreen extends StatefulWidget {
   late LatLng center;
@@ -14,7 +12,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  late LatLng initialLocation;
+  
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   final List<Marker> _markers = [];
 
@@ -23,54 +21,20 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     addCustomIcon();
+    addMarker();
     super.initState();
-    initialLocation = widget.center;
   }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    _getCurrentLocation();
-    final marker = Marker(
-      markerId: MarkerId('_currentLocation'),
-      position: LatLng(initialLocation.latitude, initialLocation.longitude),
-      icon: markerIcon,
-    );
-    _markers.add(marker);
+ 
+    // addMarker();
   }
 
-  Future<void> _askForLocationPermission() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      _getCurrentLocation();
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SaveAddressPage(
-                  center: initialLocation,
-                )
-        ),
-      );
-    }
-  }
-
-  Future<void> _getCurrentLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      setState(() {
-        initialLocation = LatLng(position.latitude, position.longitude);
-      });
-      mapController.animateCamera(CameraUpdate.newLatLng(initialLocation));
-      print('Current location: $initialLocation');
-    } catch (e) {
-      print('Error getting location: $e');
-    }
-  }
-
-  void addCustomIcon() {
-    BitmapDescriptor.fromAssetImage(const ImageConfiguration(),
-            "assets/images/noun-home-map-pin-805793.png")
+  Future<void> addCustomIcon() async {
+    await BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(size: Size(10, 10)),
+            "assets/images/homeIcon.png")
         .then(
       (icon) {
         setState(() {
@@ -78,6 +42,17 @@ class _MapScreenState extends State<MapScreen> {
         });
       },
     );
+
+       final marker = Marker(
+      markerId: MarkerId('_currentLocation'),
+      position: widget.center,
+      icon: markerIcon,
+    );
+    _markers.add(marker);
+  }
+
+  void addMarker() {
+    
   }
 
   void saveAddress() {
@@ -85,9 +60,8 @@ class _MapScreenState extends State<MapScreen> {
       context,
       MaterialPageRoute(
           builder: (context) => SaveAddressPage(
-                center: initialLocation,
-        )
-      ),
+                center: _markers.first.position,
+              )),
     );
   }
 
@@ -98,22 +72,31 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: const Text('Mark Entrance'),
         backgroundColor: Colors.white,
-        centerTitle: true,
+        centerTitle: false,
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
-
         child: GoogleMap(
           initialCameraPosition: CameraPosition(
-            target: initialLocation,
+            target: widget.center,
             zoom: 16.9,
           ),
+          myLocationButtonEnabled: false,
           mapType: MapType.terrain,
           onMapCreated: _onMapCreated,
           zoomControlsEnabled: true,
           zoomGesturesEnabled: true,
           // myLocationEnabled: true,
           markers: _markers.toSet(),
+          // markers: {
+          //   Marker(
+          //       markerId: MarkerId('_currentLocation'),
+          //       position: widget.center,
+          //       icon: markerIcon,
+          //       onDragEnd: ((newPosition) {
+          //         widget.center = newPosition;
+          //       })),
+          // },
           onCameraMove: (position) {
             setState(() {
               _markers.first =

@@ -8,7 +8,6 @@ class Google extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      
       style: ElevatedButton.styleFrom(
         shadowColor: Colors.white,
         foregroundColor: Colors.white,
@@ -16,8 +15,7 @@ class Google extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        // minimumSize: Size(319, 48),
-         minimumSize: Size(369, 58),
+        minimumSize: Size(369, 58),
       ),
       onPressed: () {
         onTap!();
@@ -28,20 +26,17 @@ class Google extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            // Image(
-            //   image: AssetImage("assets/images/google.png"),
-            //   // height: 18.0,
-            //   width: 24,
-            // ),
-            Padding(
-              padding: EdgeInsets.only(left: 24, right: 8),
-              child: Text(
-                'Continue with Google',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w500,
-                ),
+            Text(
+              '🌐', // Google globe emoji
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(width: 8),
+            Text(
+              'Continue with Google',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],

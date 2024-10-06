@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:olo/components/continue.dart';
+import 'package:olo/components/textfield.dart';
 import 'package:olo/homepage.dart';
 import 'package:olo/screens/auth/markEntrance.dart';
-
+import 'package:olo/services/user.dart';
+import 'package:olo/utlis/toast.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toastification/toastification.dart';
 
 class SaveAddressPage extends StatefulWidget {
   LatLng? center;
@@ -19,11 +23,8 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final phoneController = TextEditingController();
-  late BitmapDescriptor markerIcon;
-
-  bool showError = false;
-  String errorMessage = '';
-
+  UserService userService = UserService();
+  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   bool enableSave = false;
   late GoogleMapController mapController;
 
@@ -32,21 +33,17 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
   @override
   void initState() {
     super.initState();
-    addCustomIcon();
+    _addCustomIcon();
     nameController.addListener(checkEnableSave);
     addressController.addListener(checkEnableSave);
     phoneController.addListener(checkEnableSave);
     _center = widget.center ?? LatLng(37.422131, -122.084801);
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-    _getCurrentLocation();
-  }
-
-  void addCustomIcon() {
-    BitmapDescriptor.fromAssetImage(const ImageConfiguration(),
-            "/Users/Hamza/mono-olo-ropo/olo/assets/images/noun-home-map-pin-805793.png")
+  void _addCustomIcon() {
+    BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(size: Size(10, 10)),
+            "assets/images/homeIcon.png")
         .then(
       (icon) {
         setState(() {
@@ -56,51 +53,65 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
     );
   }
 
-  Future<void> _askForLocationPermission() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      _getCurrentLocation();
-    } else {
-      print('Location permission denied');
-    }
-  }
+  Future<void> _getUserLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  Future<void> _getCurrentLocation() async {
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      showToast(context, "Error", "Location services are disabled.",
+          ToastificationType.error);
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        showToast(context, "Error", "Location permission denied.",
+            ToastificationType.error);
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      showToast(
+          context,
+          "Error",
+          "Location permissions are permanently denied, we cannot request permissions.",
+          ToastificationType.error);
+      return;
+    }
+
     try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+      Position position = await Geolocator.getCurrentPosition();
       setState(() {
         _center = LatLng(position.latitude, position.longitude);
       });
-      mapController.animateCamera(CameraUpdate.newLatLng(_center));
-      print('Current location: $_center');
+      mapController.animateCamera(CameraUpdate.newLatLngZoom(_center!, 16.9));
     } catch (e) {
-      print('Error getting location: $e');
+      showToast(context, "Error", "Error getting location: $e",
+          ToastificationType.error);
     }
   }
 
-  void _mapClicked(LatLng latLng) {
-    print('Map clicked');
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+    if (widget.center == null) _getUserLocation();
   }
 
   void checkEnableSave() {
     final phoneValid = RegExp(r'^\d+$').hasMatch(phoneController.text);
 
-    if (phoneValid || phoneController.text.isEmpty) {
-      setState(() {
-        showError = false;
-        errorMessage = '';
-      });
-    } else {
-      setState(() {
-        showError = true;
-        errorMessage = 'Phone number must contain only digits';
-      });
+    if (!phoneValid && phoneController.text.isNotEmpty) {
+      showToast(context, "Error", "Phone number must contain only digits.",
+          ToastificationType.error);
     }
 
     if (nameController.text.isNotEmpty &&
         addressController.text.isNotEmpty &&
-        phoneController.text.isNotEmpty) {
+        phoneController.text.isNotEmpty &&
+        phoneValid) {
       setState(() {
         enableSave = true;
       });
@@ -116,25 +127,31 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
       setState(() {
         enableSave = false;
       });
-      // print(mapController.showMarkerInfoWindow(MarkerId('_currentLocation')));
-      // var (success, msg) = await clientService.newAddressRegister(
-      //     nameController.text,
-      //     addressController.text,
-      //     phoneController.text,
-      //     _center.latitude,
-      //     _center.longitude);
+      // Simulate the address saving operation
+      try {
+        var error = await userService.registerCoordinates({
+          'phone': phoneController.text,
+          'address': {
+            'name': nameController.text,
+            'street': addressController.text,
+            'latitude': _center.latitude,
+            'longitude': _center.longitude,
+          }
+        });
 
-      // if (success) {
-      //   Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => MyHomePage()),
-      //   );
-      // } else {
-      //   setState(() {
-      //     showError = true;
-      //     errorMessage = msg;
-      //   });
-      // }
+        if (error == null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MyHomePage()),
+          );
+        } else {
+          showToast(context, "Error", error, ToastificationType.error);
+          print(error);
+        }
+      } catch (e) {
+        showToast(context, "Error", "Unexpected error occurred, try later.",
+            ToastificationType.error);
+      }
     }
   }
 
@@ -153,7 +170,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
       appBar: AppBar(
           centerTitle: false,
           backgroundColor: Colors.white,
-          title: Text('Save Addres'),
+          title: Text('Save Address'),
           automaticallyImplyLeading: false),
       body: SafeArea(
           child: Padding(
@@ -162,23 +179,27 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 160,
+              height: 200,
               child: GoogleMap(
+                mapType: MapType.terrain,
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
-                  target: _center,
-                  zoom: 15.9,
+                  target: widget.center ?? _center,
+                  zoom: 16.9,
                 ),
+                myLocationButtonEnabled: false,
                 onTap: (LatLng latLng) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => MapScreen(center: latLng,)),
+                    MaterialPageRoute(
+                      builder: (context) => MapScreen(center: _center),
+                    ),
                   );
                 },
                 markers: {
                   Marker(
                       markerId: MarkerId('_currentLocation'),
-                      position: _center,
+                      position: widget.center ?? _center,
                       icon: markerIcon,
                       onDragEnd: ((newPosition) {
                         _center = newPosition;
@@ -198,6 +219,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
             SizedBox(height: 10),
             Text('Name', style: TextStyle(fontSize: 16)),
             SizedBox(height: 8),
+        
             TextField(
               controller: nameController,
               decoration: InputDecoration(
@@ -214,7 +236,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'House or apartment number, floor...'),
-              maxLines: 1,
+              maxLines: 10,
               minLines: 1,
             ),
             SizedBox(height: 16),
@@ -247,6 +269,10 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
                 Expanded(
                   child: TextField(
                     controller: phoneController,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9()]')),
+                      LengthLimitingTextInputFormatter(10),
+                    ],
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Your phone number',
@@ -257,12 +283,6 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
               ],
             ),
             SizedBox(height: 16),
-            showError
-                ? Text(
-                    errorMessage,
-                    style: TextStyle(color: Colors.red),
-                  )
-                : SizedBox(),
           ],
         ),
       )),

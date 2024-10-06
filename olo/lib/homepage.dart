@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:olo/pagess/home/vendorlist.dart';
-import 'package:olo/pagess/settings/profile.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -8,98 +6,99 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
-  final List<Widget> _screens = [
-    VendorListPage(),
-    OrdersScreen(),
-    OrdersScreen(),
+  int _selectedIndex = 0;
+  int _counter = 10;
 
-    NotificationsScreen(),
-    ProfilePage(),
-  ];
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.black,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 15,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              Text('Content for index $_selectedIndex'),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _counter++;
+                  });
+                },
+                child: Text('Increment Counter'),
               ),
-              child: Text(
-                'OLO',
-                style: TextStyle(color: Colors.white),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _counter = 0;
+                  });
+                },
+                child: Text('Reset Counter'),
               ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 4,
+              offset: Offset(0, -1),
             ),
-            label: '',
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildIcon(Icons.home_outlined, 0),
+                _buildIcon(Icons.notifications_outlined, 1),
+                _buildCenterIcon(),
+                _buildIcon(Icons.shopping_bag_outlined, 3),
+                _buildIcon(Icons.person_outline, 4),
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '',
-          ),
-        ],
+        ),
       ),
     );
   }
-}
 
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Home Screen'),
+  Widget _buildIcon(IconData icon, int index) {
+    return IconButton(
+      icon: Icon(icon, color: Colors.black, size: 30,),
+      onPressed: () => _onItemTapped(index),
     );
   }
-}
 
-class OrdersScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Orders Screen'),
-    );
-  }
-}
-
-class NotificationsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Notifications Screen'),
+  Widget _buildCenterIcon() {
+    return GestureDetector(
+      onTap: () => _onItemTapped(2),
+      child: Container(
+        width: 50,
+        height: 50,
+         margin: EdgeInsets.only(bottom: 20),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Text(
+             (_counter > 0)? '$_counter' : 'Olo',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        ),
+      ),
     );
   }
 }
