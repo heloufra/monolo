@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:olo/components/simple_list_tile.dart';
+import 'package:olo/components/add_button.dart';
 import 'item_details.dart' show modifierName;
+import 'option_details.dart';
+
+String options = 'Normal';
+double price = 0.0;
 
 class OptionsPage extends StatefulWidget {
   const OptionsPage({super.key});
@@ -9,6 +15,7 @@ class OptionsPage extends StatefulWidget {
 }
 
 class _OptionsPageState extends State<OptionsPage> {
+  double price = 0.0;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -24,7 +31,29 @@ class _OptionsPageState extends State<OptionsPage> {
           ),
         ),
         body: Container(
+          padding: EdgeInsets.all(16),
           color: Colors.white,
+          child: Column(
+            children: [
+              simpleListTile(
+                options,
+                '$price Dhs',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OptionDetails(),
+                    ),
+                  );
+                },
+              ),
+              addButton(
+                context: context,
+                title: 'New Option',
+                onPressed: () {},
+              ),
+            ],
+          ),
         ),
       ),
     );
