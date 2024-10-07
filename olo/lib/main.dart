@@ -3,6 +3,7 @@ import 'package:olo/screens/auth/welcome.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:toastification/toastification.dart';
+import 'screens/admin_dashboard/orders.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
     return ToastificationWrapper(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home:   const Welcome(),
+        home: const OrdersPage(),
       ),
     );
   }
