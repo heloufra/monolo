@@ -58,11 +58,7 @@ class _DrawerPageState extends State<DrawerPage> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const OrdersPage(),
-                  ),
-                );
+                Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back_sharp),
               color: Colors.black,
