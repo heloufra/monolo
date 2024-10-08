@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olo/components/simple_list_tile.dart';
 import 'package:olo/components/add_button.dart';
-import 'item_details.dart' show modifierName;
+import 'item_details.dart';
 import 'option_details.dart';
 import 'new_option.dart';
 
@@ -26,6 +26,20 @@ class _OptionsPageState extends State<OptionsPage> {
           backgroundColor: Colors.white,
           shadowColor: Colors.grey,
           leadingWidth: 25,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ItemDetails(),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
           title: Text(
             modifierName,
             style: TextStyle(color: Colors.black),

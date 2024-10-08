@@ -3,7 +3,8 @@ import 'item_details.dart';
 import 'package:olo/components/add_button.dart';
 import 'package:olo/components/category_list.dart';
 import 'new_item.dart';
-import 'menu.dart' show categoryName;
+import 'category_edit.dart';
+import 'menu.dart';
 
 String itemName = 'Margarita';
 
@@ -24,13 +25,34 @@ class _CategoryItemsState extends State<CategoryItems> {
           backgroundColor: Colors.white,
           shadowColor: Colors.grey,
           leadingWidth: 25,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Menu(),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
           title: Text(
             categoryName,
             style: TextStyle(color: Colors.black),
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CategoryEdit(),
+                  ),
+                );
+              },
               icon: const Icon(
                 Icons.edit,
                 color: Colors.black,
