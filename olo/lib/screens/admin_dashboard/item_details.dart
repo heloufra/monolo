@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '/components/simple_list_tile.dart';
 import 'package:olo/components/add_button.dart';
 import 'options_page.dart';
+import 'new_modifier.dart';
 import 'category_items.dart' show itemName;
 
 String modifierName = 'Size';
@@ -59,7 +60,14 @@ class _ItemDetailsState extends State<ItemDetails> {
               addButton(
                 context: context,
                 title: 'New Modifier',
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NewModifier(),
+                    ),
+                  );
+                },
               ),
             ],
           ),

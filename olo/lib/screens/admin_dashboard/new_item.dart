@@ -24,7 +24,7 @@ class _NewItemState extends State<NewItem> {
           backgroundColor: Colors.white,
           shadowColor: Colors.grey,
           title: const Text(
-            'New Category',
+            'New Item',
             style: TextStyle(color: Colors.black),
           ),
           actions: [
