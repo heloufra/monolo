@@ -3,6 +3,7 @@ import 'package:olo/components/simple_list_tile.dart';
 import 'package:olo/components/add_button.dart';
 import 'item_details.dart' show modifierName;
 import 'option_details.dart';
+import 'new_option.dart';
 
 final List<String> options = ['Normal', 'Large', 'Extra Large'];
 double price = 0.0;
@@ -50,7 +51,14 @@ class _OptionsPageState extends State<OptionsPage> {
               addButton(
                 context: context,
                 title: 'New Option',
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NewOption(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
