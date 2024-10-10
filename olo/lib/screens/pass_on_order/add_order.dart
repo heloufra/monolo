@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'add_order_content.dart';
 
 class AddOrder extends StatefulWidget {
   const AddOrder({super.key});
@@ -39,17 +40,24 @@ class _AddOrderState extends State<AddOrder> with TickerProviderStateMixin {
               Container(
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Colors.grey, width: 0.5),
+                    bottom: BorderSide(
+                      color: Colors.grey,
+                      width: 0.5,
+                    ),
                   ),
                 ),
                 child: DefaultTabController(
                   length: 4,
                   child: TabBar(
+                    tabAlignment: TabAlignment.start,
+                    isScrollable: true,
                     indicator: UnderlineTabIndicator(
-                      borderSide: BorderSide(width: 1.0),
+                      borderSide: BorderSide(
+                        width: 1.0,
+                      ),
                     ),
                     controller: tabController,
-                    labelPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    labelPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                     indicatorColor: Colors.grey.shade900,
                     dividerColor: Colors.transparent,
                     indicatorSize: TabBarIndicatorSize.tab,
@@ -59,23 +67,39 @@ class _AddOrderState extends State<AddOrder> with TickerProviderStateMixin {
                     ),
                     tabs: [
                       Tab(
-                        child: Text(
-                          'Salads',
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          color: Colors.white,
+                          child: Text(
+                            'Salads',
+                          ),
                         ),
                       ),
                       Tab(
-                        child: Text(
-                          'Pastas',
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          color: Colors.white,
+                          child: Text(
+                            'Pastas',
+                          ),
                         ),
                       ),
                       Tab(
-                        child: Text(
-                          'Pizzas',
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          color: Colors.white,
+                          child: Text(
+                            'Pizzas',
+                          ),
                         ),
                       ),
                       Tab(
-                        child: Text(
-                          'Bergers',
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          color: Colors.white,
+                          child: Text(
+                            'Bergers',
+                          ),
                         ),
                       ),
                     ],
@@ -85,8 +109,13 @@ class _AddOrderState extends State<AddOrder> with TickerProviderStateMixin {
               Expanded(
                 child: TabBarView(
                   controller: tabController,
-                  children: const [
-                    Center(child: Text('Salads Content')),
+                  children: [
+                    Center(
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        child: AddOrderContent(),
+                      ),
+                    ),
                     Center(child: Text('Pastas Content')),
                     Center(child: Text('Pizzas Content')),
                     Center(child: Text('Burgers Content')),
