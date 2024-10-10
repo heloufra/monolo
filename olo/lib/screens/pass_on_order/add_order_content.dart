@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:olo/components/order_list_item.dart';
+import 'package:olo/screens/pass_on_order/meal_details.dart';
+
+String mealName = 'Classic Burger';
+int mealCount = 0;
 
 class AddOrderContent extends StatefulWidget {
   const AddOrderContent({super.key});
@@ -15,35 +19,31 @@ class _AddOrderContentState extends State<AddOrderContent> {
       child: Column(
         children: [
           OrderListItem(
-            image: Icon(
-              Icons.fastfood,
-              size: 30,
-            ),
-            title: 'Classic Burger',
-            price: '28 Dhs',
-            onTap: () {},
-            onPressed: () {},
-          ),
-          OrderListItem(
-            image: Icon(
-              Icons.fastfood,
-              size: 30,
-            ),
-            title: 'Aristoctate Burger',
-            price: '26 Dhs',
-            onTap: () {},
-            onPressed: () {},
-          ),
-          OrderListItem(
-            image: Icon(
-              Icons.fastfood,
-              size: 30,
-            ),
-            title: 'Bacon and Cheese',
-            price: '25 Dhs',
-            onTap: () {},
-            onPressed: () {},
-          ),
+              image: Icon(
+                Icons.fastfood,
+                size: 30,
+              ),
+              title: mealName,
+              price: '28 Dhs',
+              count: mealCount,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MealDetails(),
+                  ),
+                );
+              },
+              onPressedMinus: () {
+                setState(() {
+                  mealCount--;
+                });
+              },
+              onPressedPlus: () {
+                setState(() {
+                  mealCount++;
+                });
+              }),
         ],
       ),
     );

@@ -71,7 +71,7 @@ class _AddOrderState extends State<AddOrder> with TickerProviderStateMixin {
                           padding: EdgeInsets.all(16),
                           color: Colors.white,
                           child: Text(
-                            'Salads',
+                            'Bergers',
                           ),
                         ),
                       ),
@@ -98,7 +98,7 @@ class _AddOrderState extends State<AddOrder> with TickerProviderStateMixin {
                           padding: EdgeInsets.all(16),
                           color: Colors.white,
                           child: Text(
-                            'Bergers',
+                            'Salads',
                           ),
                         ),
                       ),
