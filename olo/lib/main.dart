@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:olo/screens/auth/welcome.dart';
+import 'package:olo/screens/pass_on_order/order_details.dart';
 import 'screens/pass_on_order/add_order.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:toastification/toastification.dart';
-import 'screens/admin_dashboard/orders.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
     return ToastificationWrapper(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const AddOrder(),
+        home: const OrderDetails(),
       ),
     );
   }
