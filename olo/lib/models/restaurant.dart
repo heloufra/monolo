@@ -1,3 +1,5 @@
+import 'package:olo/models/dish.dart';
+import 'package:olo/models/review.dart';
 import 'package:uuid/uuid.dart';
 
 class Restaurant {
@@ -6,8 +8,10 @@ class Restaurant {
   String? address;
   String? email;
   String? phoneNumber;
-  String? picture;
-  double? rating;
+  List<String>? pictures;
+  int? rating;
+  List<Dish>? dishes;
+  List<Review>? reviews;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -17,8 +21,10 @@ class Restaurant {
     this.address,
     this.email,
     this.phoneNumber,
-    this.picture,
+    this.pictures,
     this.rating,
+    this.dishes,
+    this.reviews,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : 
@@ -33,8 +39,10 @@ class Restaurant {
       'address': address,
       'email': email,
       'phoneNumber': phoneNumber,
-      'picture': picture,
+      'pictures': pictures?.map((picture) => picture).toList(),
       'rating': rating,
+      'reviews': reviews?.map((review) => review.toMap()).toList(),
+      'dishes': dishes?.map((dish) => dish.toMap()).toList(),
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
@@ -47,8 +55,10 @@ class Restaurant {
       address: map['address'],
       email: map['email'],
       phoneNumber: map['phoneNumber'],
-      picture: map['picture'],
+      pictures: map['pictures'] != null ? List<String>.from(map['pictures'].map((picture) => picture)) : null,
       rating: map['rating'],
+      reviews: map['reviews'] != null ? List<Review>.from(map['reviews'].map((review) => Review.fromMap(review))) : null,
+      dishes: map['dishes'] != null ? List<Dish>.from(map['dishes'].map((dish) => Dish.fromMap(dish))) : null,
       createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : null,
       updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : null,
     );

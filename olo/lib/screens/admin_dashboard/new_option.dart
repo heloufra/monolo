@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'menu.dart';
-import 'package:olo/components/add_button.dart';
+import 'options_page.dart';
 import 'package:olo/components/save_button.dart';
 
-class NewCategory extends StatefulWidget {
-  const NewCategory({super.key});
+class NewOption extends StatefulWidget {
+  const NewOption({super.key});
 
   @override
-  State<NewCategory> createState() => _NewCategoryState();
+  State<NewOption> createState() => _NewOptionState();
 }
 
-class _NewCategoryState extends State<NewCategory> {
+class _NewOptionState extends State<NewOption> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _addCostController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class _NewCategoryState extends State<NewCategory> {
         backgroundColor: Colors.white,
         shadowColor: Colors.grey,
         title: const Text(
-          'New Category',
+          'New Option',
           style: TextStyle(color: Colors.black),
         ),
         actions: [
@@ -31,7 +31,7 @@ class _NewCategoryState extends State<NewCategory> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Menu(),
+                  builder: (context) => const OptionsPage(),
                 ),
               );
             },
@@ -60,7 +60,7 @@ class _NewCategoryState extends State<NewCategory> {
             TextField(
               controller: _nameController,
               decoration: const InputDecoration(
-                hintText: 'Pizza',
+                hintText: 'Option Name',
                 hintStyle:
                     TextStyle(color: Color.fromARGB(255, 209, 208, 208)),
                 focusedBorder: OutlineInputBorder(
@@ -75,16 +75,23 @@ class _NewCategoryState extends State<NewCategory> {
             const Padding(
               padding: EdgeInsets.only(bottom: 8.0),
               child: Text(
-                'Cover Image',
+                'Additional Cost',
                 style: TextStyle(fontSize: 16),
               ),
             ),
-            addButton(
-              context: context,
-              title: 'Upload Image',
-              onPressed: () {
-                // Handle upload image button tap
-              },
+            TextField(
+              controller: _addCostController,
+              decoration: const InputDecoration(
+                hintText: 'Add option cost',
+                hintStyle:
+                    TextStyle(color: Color.fromARGB(255, 209, 208, 208)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+              ),
             ),
             Spacer(),
             SaveButton(

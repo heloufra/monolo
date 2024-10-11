@@ -1,31 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:olo/screens/admin_dashboard/menu.dart';
+import 'category_items.dart';
 import 'package:olo/components/save_button.dart';
-import 'options_page.dart' show options, price;
 
-class OptionDetails extends StatefulWidget {
-  const OptionDetails({super.key});
+class CategoryEdit extends StatefulWidget {
+  const CategoryEdit({super.key});
 
   @override
-  State<OptionDetails> createState() => _OptionDetailsState();
+  State<CategoryEdit> createState() => _CategoryEditState();
 }
 
-class _OptionDetailsState extends State<OptionDetails> {
+class _CategoryEditState extends State<CategoryEdit> {
+  final TextEditingController _nameController = TextEditingController();
   bool isAvailable = true;
-  final TextEditingController _nameController1 = TextEditingController();
-  final TextEditingController _nameController2 = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0.5,
         backgroundColor: Colors.white,
         shadowColor: Colors.grey,
-        leadingWidth: 25,
-        title: Text(
-          options.first,
+        title: const Text(
+          'Category Edit',
           style: TextStyle(color: Colors.black),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CategoryItems(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.clear,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -83,11 +98,10 @@ class _OptionDetailsState extends State<OptionDetails> {
                 ),
               ),
               TextField(
-                controller: _nameController1,
+                controller: _nameController,
                 decoration: InputDecoration(
-                  hintText: options.first,
-                  hintStyle:
-                      TextStyle(color: Color.fromARGB(255, 209, 208, 208)),
+                  hintText: categoryName,
+                  hintStyle: TextStyle(color: Colors.black),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
                   ),
@@ -96,44 +110,51 @@ class _OptionDetailsState extends State<OptionDetails> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
                 child: Text(
-                  'Additional Cost',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey.shade800,
+                  'Cover Image',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 0.5,
+                  ),
+                ),
+                child: ListTile(
+                  leading: Container(
+                    child: Icon(
+                      Icons.image,
+                      size: 40,
+                    ),
+                  ),
+                  title: Text(
+                    'Upload Image',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.cancel_rounded,
+                    color: Colors.black,
                   ),
                 ),
               ),
-              TextField(
-                controller: _nameController2,
-                decoration: InputDecoration(
-                  hintText: price.toString(),
-                  hintStyle:
-                      TextStyle(color: Color.fromARGB(255, 209, 208, 208)),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
+              const SizedBox(height: 165),
+              SaveButton(
+                onPressed: () {
+                  // Handle save button tap
+                },
               ),
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        // height: 110,
-        // backgroundColor: Colors.white,
-        color: Colors.transparent,
-        child: SaveButton(
-          onPressed: () {
-            // Handle save button tap
-          },
-        ),
-        elevation: 0,
       ),
     );
   }

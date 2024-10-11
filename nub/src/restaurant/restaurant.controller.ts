@@ -10,19 +10,19 @@ import { GetCurrentUser } from 'src/common/user.decorator';
 export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) {}
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Get('all')
   async getAllUsers() {
     return await this.restaurantService.findAll();
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Get('me')
   async getUser(@GetCurrentUser() user: any) {
     return await this.restaurantService.findOne(user);
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin', 'restaurant'])
+  @Roles(['customer', 'delivery_person', 'admin', 'restaurant'])
   @Get(':id')
   async getRestoId(@GetCurrentUser() user: any, @Param() id: string) {
     return await this.restaurantService.findbyid(id);

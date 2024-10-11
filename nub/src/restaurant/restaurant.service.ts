@@ -4,16 +4,39 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class RestaurantService {
-  constructor (private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findAll() {
-    return await this.prismaService.dish.findMany();
+    return await this.prismaService.restaurant.findMany({
+      select: {
+        id: true,
+        name: true,
+        logo: true,
+        pictures: true,
+        rating: true,
+        phoneNumber: true,
+        address: true,
+        reviews: true,
+        dishes: true,
+      },
+    });
   }
 
   async findOne(user: any) {
-    return await this.prismaService.dish.findUnique({
+    return await this.prismaService.restaurant.findUnique({
       where: {
         id: user.id,
+      },
+      select: {
+        id: true,
+        name: true,
+        logo: true,
+        pictures: true,
+        rating: true,
+        phoneNumber: true,
+        address: true,
+        reviews: true,
+        dishes: true,
       },
     });
   }
@@ -25,16 +48,38 @@ export class RestaurantService {
       },
       data: {
         name: updateRestaurantDto.name,
-        picture: updateRestaurantDto.pictureURL
-      }
+        logo: updateRestaurantDto.logo,
+        pictures: updateRestaurantDto.pictures,
+      },
+      select: {
+        id: true,
+        name: true,
+        logo: true,
+        pictures: true,
+        rating: true,
+        phoneNumber: true,
+        address: true,
+        reviews: true,
+        dishes: true,
+      },
     });
   }
 
-
   async findbyid(id: string) {
-    return await this.prismaService.dish.findUnique({
+    return await this.prismaService.restaurant.findUnique({
       where: {
         id: id,
+      },
+      select: {
+        id: true,
+        name: true,
+        logo: true,
+        pictures: true,
+        rating: true,
+        phoneNumber: true,
+        address: true,
+        reviews: true,
+        dishes: true,
       },
     });
   }

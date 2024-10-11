@@ -3,12 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/components/textfield.dart';
-import 'package:olo/homepage.dart';
 import 'package:olo/screens/auth/markEntrance.dart';
+import 'package:olo/screens/restaurants/restaurants.dart';
 import 'package:olo/services/user.dart';
 import 'package:olo/utlis/toast.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:toastification/toastification.dart';
 
 class SaveAddressPage extends StatefulWidget {
@@ -142,7 +140,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
         if (error == null) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MyHomePage()),
+            MaterialPageRoute(builder: (context) => RestaurantScreen()),
           );
         } else {
           showToast(context, "Error", error, ToastificationType.error);
@@ -166,6 +164,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       backgroundColor: Colors.white,
       appBar: AppBar(
           centerTitle: false,

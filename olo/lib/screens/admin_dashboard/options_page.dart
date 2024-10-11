@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:olo/components/simple_list_tile.dart';
 import 'package:olo/components/add_button.dart';
-import 'item_details.dart' show modifierName;
+import 'item_details.dart';
 import 'option_details.dart';
+import 'new_option.dart';
 
 final List<String> options = ['Normal', 'Large', 'Extra Large'];
 double price = 0.0;
@@ -18,42 +19,61 @@ class _OptionsPageState extends State<OptionsPage> {
   double price = 0.0;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0.5,
-          backgroundColor: Colors.white,
-          shadowColor: Colors.grey,
-          leadingWidth: 25,
-          title: Text(
-            modifierName,
-            style: TextStyle(color: Colors.black),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.5,
+        backgroundColor: Colors.white,
+        shadowColor: Colors.grey,
+        leadingWidth: 25,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ItemDetails(),
+              ),
+            );
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
           ),
         ),
-        body: Container(
-          padding: EdgeInsets.all(16),
-          color: Colors.white,
-          child: Column(
-            children: [
-              simpleListTile(
-                options.first,
-                '$price Dhs',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OptionDetails(),
-                    ),
-                  );
-                },
-              ),
-              addButton(
-                context: context,
-                title: 'New Option',
-                onPressed: () {},
-              ),
-            ],
-          ),
+        title: Text(
+          modifierName,
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(16),
+        color: Colors.white,
+        child: Column(
+          children: [
+            simpleListTile(
+              options.first,
+              '$price Dhs',
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OptionDetails(),
+                  ),
+                );
+              },
+            ),
+            addButton(
+              context: context,
+              title: 'New Option',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewOption(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

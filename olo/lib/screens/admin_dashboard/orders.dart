@@ -11,25 +11,23 @@ class OrdersPage extends StatefulWidget {
 class _OrdersPageState extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        drawer: const Drawer(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          child: DrawerPage(),
+    return Scaffold(
+      drawer: const Drawer(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        child: DrawerPage(),
+      ),
+      appBar: AppBar(
+        elevation: 0.5,
+        backgroundColor: Colors.white,
+        shadowColor: Colors.grey,
+        leadingWidth: 25,
+        title: const Text(
+          'Ordres',
+          style: TextStyle(color: Colors.black),
         ),
-        appBar: AppBar(
-          elevation: 0.5,
-          backgroundColor: Colors.white,
-          shadowColor: Colors.grey,
-          leadingWidth: 25,
-          title: const Text(
-            'Ordres',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-        body: Container(
-          color: Colors.white,
-        ),
+      ),
+      body: Container(
+        color: Colors.white,
       ),
     );
   }

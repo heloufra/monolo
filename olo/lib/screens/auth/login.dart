@@ -44,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         showToast(context, "Check Your Email", "we have sent OTP", ToastificationType.success);
         String email = _emailController.text.trim();
+        
          Navigator.push(
           context,
           MaterialPageRoute(
@@ -111,6 +112,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset : false,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(

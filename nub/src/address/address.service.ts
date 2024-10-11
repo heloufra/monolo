@@ -23,7 +23,7 @@ export class AddressService {
           id: user.id,
         },
         data: {
-          addresses: {
+          address: {
             create: addressRegisterDto.address,
           },
           phoneNumber: addressRegisterDto.phone,
@@ -59,7 +59,7 @@ export class AddressService {
           id: user.id,
         },
         data: {
-          addresses: {
+          address: {
             connect: {
               id: address.id,
             },

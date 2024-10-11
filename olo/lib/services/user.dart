@@ -15,7 +15,6 @@ class UserService {
 
     final url = Uri.parse('${Constants.baseUrl}/address/register/coordinates');
     try {
-            print(jsonEncode(userData));
 
       final response = await http.post(
         url,

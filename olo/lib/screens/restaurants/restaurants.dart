@@ -1,42 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:olo/rstd.dart';
+import 'package:olo/models/mockRestaurants.dart';
+import 'package:olo/models/restaurant.dart';
+import 'package:olo/screens/restaurants/restaurant_details.dart';
 
 class RestaurantScreen extends StatelessWidget {
   final String selectedAddress =
       "Residence Le Rubis, Boulevard du 18 Novembre, Marrakech Maroc.";
 
-  final List<Map<String, String>> restaurants = [
-    {
-      'name': 'Mediterranean Delights',
-      'description':
-          'Welcome to our fish restaurant, where we pride ourselves on serving the freshest and most delicious seafood dishes in town.',
-      'distance': '246 meters',
-      'deliveryTime': '20-35 min',
-      'deliveryFee': 'Free Delivery',
-      'image':
-          'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80',
-      'logo':
-          'https://cdn-icons-png.flaticon.com/512/3081/3081692.png'
-    },
-    {
-      'name': 'Pasta House',
-      'description':
-          'Welcome to our fish restaurant, where we pride ourselves on serving the freshest and most delicious seafood dishes in town.',
-      'distance': '300 meters',
-      'deliveryTime': '25-40 min',
-      'deliveryFee': 'Free Delivery',
-      'image':
-          'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80',
-      'logo':
-          'https://cdn-icons-png.flaticon.com/512/3081/3081692.png'
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Restaurants', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: const Text('Restaurants',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
@@ -67,38 +44,67 @@ class RestaurantScreen extends StatelessWidget {
           const SizedBox(height: 16),
           // Restaurant list
           Expanded(
-            child: ListView.builder(
-              
-              itemCount: restaurants.length,
-              itemBuilder: (context, index) {
-                final restaurant = restaurants[index];
-                return RestaurantWidget(
-                  name: restaurant['name']!,
-                  description: restaurant['description']!,
-                  distance: restaurant['distance']!,
-                  deliveryTime: restaurant['deliveryTime']!,
-                  deliveryFee: restaurant['deliveryFee']!,
-                  imagePath: restaurant['image']!,
-                  logoPath: restaurant['logo']!,
-                );
+            child: FutureBuilder<List<Restaurant>>(
+              future: MockDataService.getRestaurants(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  print("error");
+
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No restaurants found'));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final restaurant = snapshot.data![index];
+                      return RestaurantWidget(
+                        name: restaurant.name,
+                        description:
+                            'A great place to eat!', // You might want to add a description field to your Restaurant model
+                        distance:
+                            '${(index + 1) * 100} meters', // This is mock data, you'd calculate this in a real app
+                        deliveryTime:
+                            '${20 + (index * 5)}-${35 + (index * 5)} min',
+                        deliveryFee: 'Free Delivery',
+                        imagePath: restaurant.pictures?[0] ??
+                            'https://via.placeholder.com/150',
+                        logoPath:
+                            'https://cdn-icons-png.flaticon.com/512/3081/3081692.png', // You might want to add a logo field to your Restaurant model
+                        restaurant: restaurant,
+                      );
+                    },
+                  );
+                }
               },
             ),
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        ],
-      ),
+      // bottomNavigationBar: BottomAppBar(
+      //   // backgroundColor: Colors.white,
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //     children: [
+      //       IconButton(icon: Icon(Icons.home), onPressed: () {}),
+      //       IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
+      //       SizedBox(width: 32), // Space for the FAB
+      //       IconButton(icon: Icon(Icons.shopping_bag), onPressed: () {}),
+      //       IconButton(icon: Icon(Icons.person), onPressed: () {}),
+      //     ],
+      //   ),
+      // ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Text('OLO', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+      //   onPressed: () {},
+      //   backgroundColor: Colors.black,
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
-
 
 class RestaurantWidget extends StatelessWidget {
   final String name;
@@ -108,6 +114,7 @@ class RestaurantWidget extends StatelessWidget {
   final String deliveryFee;
   final String imagePath;
   final String logoPath;
+  final Restaurant restaurant;
 
   const RestaurantWidget({
     Key? key,
@@ -118,6 +125,7 @@ class RestaurantWidget extends StatelessWidget {
     required this.deliveryFee,
     required this.imagePath,
     required this.logoPath,
+    required this.restaurant,
   }) : super(key: key);
 
   @override
@@ -130,6 +138,7 @@ class RestaurantWidget extends StatelessWidget {
             builder: (context) => RestaurantDetailsScreen(
               restaurantName: name,
               logoUrl: logoPath,
+              restaurant: restaurant,
             ),
           ),
         );
@@ -193,9 +202,11 @@ class RestaurantWidget extends StatelessWidget {
                   // Delivery details row
                   Row(
                     children: [
-                      _buildInfoChip(deliveryFee, Colors.green[50]!, Colors.green[700]!),
+                      _buildInfoChip(
+                          deliveryFee, Colors.green[50]!, Colors.green[700]!),
                       SizedBox(width: 8),
-                      _buildInfoChip(deliveryTime, Colors.grey[200]!, Colors.black),
+                      _buildInfoChip(
+                          deliveryTime, Colors.grey[200]!, Colors.black),
                       SizedBox(width: 8),
                       _buildInfoChip(distance, Colors.grey[200]!, Colors.black),
                     ],
@@ -218,7 +229,8 @@ class RestaurantWidget extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 12),
+        style: TextStyle(
+            color: textColor, fontWeight: FontWeight.bold, fontSize: 12),
       ),
     );
   }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateRestaurantDto {
@@ -10,5 +10,10 @@ export class UpdateRestaurantDto {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    pictureURL: string;
+    logo: string;
+
+    @ApiProperty()
+    @IsArray()
+    @IsString({ each: true })
+    pictures: string[];
 }

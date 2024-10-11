@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'menu.dart';
-import 'package:olo/components/add_button.dart';
+import 'item_details.dart';
 import 'package:olo/components/save_button.dart';
 
-class NewCategory extends StatefulWidget {
-  const NewCategory({super.key});
+class NewModifier extends StatefulWidget {
+  const NewModifier({super.key});
 
   @override
-  State<NewCategory> createState() => _NewCategoryState();
+  State<NewModifier> createState() => _NewModifierState();
 }
 
-class _NewCategoryState extends State<NewCategory> {
+class _NewModifierState extends State<NewModifier> {
   final TextEditingController _nameController = TextEditingController();
+  String selectedOption = 'Option 1';
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class _NewCategoryState extends State<NewCategory> {
         backgroundColor: Colors.white,
         shadowColor: Colors.grey,
         title: const Text(
-          'New Category',
+          'New Modifier',
           style: TextStyle(color: Colors.black),
         ),
         actions: [
@@ -31,7 +31,7 @@ class _NewCategoryState extends State<NewCategory> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Menu(),
+                  builder: (context) => const ItemDetails(),
                 ),
               );
             },
@@ -60,7 +60,7 @@ class _NewCategoryState extends State<NewCategory> {
             TextField(
               controller: _nameController,
               decoration: const InputDecoration(
-                hintText: 'Pizza',
+                hintText: 'Modifier Name',
                 hintStyle:
                     TextStyle(color: Color.fromARGB(255, 209, 208, 208)),
                 focusedBorder: OutlineInputBorder(
@@ -75,16 +75,47 @@ class _NewCategoryState extends State<NewCategory> {
             const Padding(
               padding: EdgeInsets.only(bottom: 8.0),
               child: Text(
-                'Cover Image',
+                'Max Selectable options',
                 style: TextStyle(fontSize: 16),
               ),
             ),
-            addButton(
-              context: context,
-              title: 'Upload Image',
-              onPressed: () {
-                // Handle upload image button tap
-              },
+            Container(
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: DropdownButton<String>(
+                value: selectedOption,
+                icon: Padding(
+                  padding: const EdgeInsets.only(left: 160),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.black,
+                  ),
+                ),
+                items: <String>['Option 1', 'Option 2', 'Option 3']
+                    .map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(
+                    () {
+                      selectedOption = newValue!;
+                    },
+                  );
+                },
+                elevation: 1,
+                underline: const SizedBox(),
+              ),
             ),
             Spacer(),
             SaveButton(
@@ -95,6 +126,7 @@ class _NewCategoryState extends State<NewCategory> {
           ],
         ),
       ),
+      
     );
   }
 }

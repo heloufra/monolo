@@ -1,12 +1,11 @@
 generator client {
   provider = "prisma-client-js"
-    // binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
-
+  // binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -15,6 +14,7 @@ enum UserRole {
   DELIVERY_PERSON
   ADMIN
   RESTAURANT
+
   @@map("userrole")
 }
 
@@ -25,6 +25,7 @@ enum OrderStatus {
   OUT_FOR_DELIVERY
   DELIVERED
   CANCELLED
+
   @@map("orderstatus")
 }
 
@@ -32,42 +33,47 @@ enum NotificationPreference {
   EMAIL
   SMS
   NONE
+
   @@map("notificationpreference")
 }
 
 model User {
-  id           String    @id @default(uuid())
-  name         String?
+  id          String    @id @default(uuid())
+  name        String?
   // email and phone number are uniq and optional because we can have users who signed up with phone number or email
-  email        String?   @unique
-  phoneNumber  String?   @unique
-  otp          String?
-  role         UserRole  @default(CUSTOMER)
-  picture      String?
-  orders       Order[]   @relation("CustomerOrders")
-  deliveries   Order[]   @relation("DeliveryPersonOrders")
-  reviews      Review[]
-  addresses    Address[]
-  settings     Settings?
-  createdAt    DateTime?  @default(now())
-  updatedAt    DateTime?  @updatedAt
+  email       String?   @unique
+  phoneNumber String?   @unique
+  otp         String?
+  role        UserRole  @default(CUSTOMER)
+  picture     String?
+  orders      Order[]   @relation("CustomerOrders")
+  deliveries  Order[]   @relation("DeliveryPersonOrders")
+  reviews     Review[]
+  addresses   Address[]
+  settings    Settings?
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+
   @@map("users")
 }
 
 model Restaurant {
-  id           String    @id @default(uuid())
-  name         String
-  address      String?
-  email        String?   @unique
-  phoneNumber  String?   @unique
-  picture      String?
-  rating       Float?
-  dishes       Dish[]
-  orders       Order[]
-  reviews      Review[]
-  addresses    Address[]
-  createdAt    DateTime?  @default(now())
-  updatedAt    DateTime?  @updatedAt
+  id          String    @id @default(uuid())
+  name        String
+  addressId   String? @unique
+  address     Address?  @relation(fields: [addressId], references: [id])
+  email       String   @unique
+  phoneNumber String?   @unique
+  logo        String?
+  pictures     String[]
+  rating      Float?
+  description  String?
+  dishes      Dish[]
+  orders      Order[]
+  reviews     Review[]
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+
   @@map("restaurants")
 }
 
@@ -84,6 +90,7 @@ model Dish {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   reviews      Review[]
+
   @@map("dishes")
 }
 
@@ -100,6 +107,7 @@ model Order {
   orderItems       OrderItem[]
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
+
   @@map("orders")
 }
 
@@ -110,6 +118,7 @@ model OrderItem {
   dish     Dish   @relation(fields: [dishId], references: [id])
   orderId  String
   order    Order  @relation(fields: [orderId], references: [id])
+
   @@map("order_items")
 }
 
@@ -124,7 +133,8 @@ model Review {
   restaurantId String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
   dishId       String?
-  dish         Dish? @relation(fields: [dishId], references: [id])
+  dish         Dish?      @relation(fields: [dishId], references: [id])
+
   @@map("reviews")
 }
 
@@ -140,10 +150,10 @@ model Address {
   longitude    Float?
   userId       String?
   user         User?       @relation(fields: [userId], references: [id])
-  restaurantId String?
-  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurant  Restaurant?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+
   @@map("addresses")
 }
 
@@ -154,7 +164,8 @@ model Settings {
   darkMode               Boolean                @default(false)
   enableDataCollection   Boolean                @default(true)
   user                   User                   @relation(fields: [userId], references: [id])
-  createdAt              DateTime?               @default(now())
+  createdAt              DateTime?              @default(now())
   updatedAt              DateTime?              @updatedAt
+
   @@map("settings")
 }

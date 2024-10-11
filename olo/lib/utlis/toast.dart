@@ -1,4 +1,4 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
 void showToast(BuildContext context, String title, String text, ToastificationType type) {

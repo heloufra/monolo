@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-// import 'package:olo/homepage.dart';
-import 'package:olo/homepage.dart';
 import 'package:olo/main.dart';
 import 'package:olo/components/continue.dart';
+import 'package:olo/screens/restaurants/restaurants.dart';
 import 'package:olo/screens/auth/login.dart';
 import 'package:olo/screens/auth/saveaddress.dart';
 import 'package:olo/utlis/toast.dart';
@@ -45,7 +44,11 @@ class _OtpScreenState extends State<OtpPage> {
 
         return true;
       }
-      showToast(context, "Time ended", "OTP is no longer valid send another one again", ToastificationType.warning);
+      showToast(
+          context,
+          "Time ended",
+          "OTP is no longer valid send another one again",
+          ToastificationType.warning);
       return false;
     });
   }
@@ -93,15 +96,13 @@ class _OtpScreenState extends State<OtpPage> {
       }
 
       if (widget.isRegister) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SaveAddressPage()),
-        );
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => SaveAddressPage()),
+            (Route<dynamic> route) => false);
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
-        );
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => RestaurantScreen()),
+            (Route<dynamic> route) => false);
       }
     } on AuthException catch (error) {
       showToast(context, "Error", error.message, ToastificationType.error);
