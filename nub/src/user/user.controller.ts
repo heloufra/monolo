@@ -20,7 +20,7 @@ export class UserController {
     return await this.userService.findAll();
   }
 
-  @Roles(['costumer', 'delivery_person', 'admin'])
+  @Roles(['customer', 'delivery_person', 'admin'])
   @Get('me')
   async getUser(@GetCurrentUser() user: any) {
     return await this.userService.findOne(user);
@@ -29,7 +29,7 @@ export class UserController {
   /*
    * for updating name and user picture url
    */
-  @Roles(['costumer', 'delivery_person', 'admin'])
+  @Roles(['customer', 'delivery_person', 'admin'])
   @Put('update')
   async updateUser(
     @GetCurrentUser() user: any,

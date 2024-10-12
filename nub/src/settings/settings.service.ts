@@ -11,6 +11,12 @@ export class SettingsService {
       where: {
         userId: user.id,
       },
+      select: {
+        userId: true,
+        notificationPreference: true,
+        darkMode: true,
+        enableDataCollection: true,
+      }
     });
   }
 

@@ -50,22 +50,25 @@ class MenuTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Menu tab implementation (unchanged)
-    return GridView.count(
-      crossAxisCount: 2,
-      padding: EdgeInsets.all(16),
-      childAspectRatio: 1,
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      children: [
-        _buildMenuItem('Pizza', 'https://via.placeholder.com/150?text=Pizza'),
-        _buildMenuItem('Burgers', 'https://via.placeholder.com/150?text=Burgers'),
-        _buildMenuItem('Sandwiches', 'https://via.placeholder.com/150?text=Sandwiches'),
-        _buildMenuItem('Tacos', 'https://via.placeholder.com/150?text=Tacos'),
-        _buildMenuItem('Pasta', 'https://via.placeholder.com/150?text=Pasta'),
-        _buildMenuItem('Salad', 'https://via.placeholder.com/150?text=Salad'),
-        _buildMenuItem('Drinks', 'https://via.placeholder.com/150?text=Drinks'),
-        _buildMenuItem('Tea', 'https://via.placeholder.com/150?text=Tea'),
-      ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: GridView.count(
+        crossAxisCount: 2,
+        padding: EdgeInsets.all(16),
+        childAspectRatio: 1,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        children: [
+          _buildMenuItem('Pizza', 'https://via.placeholder.com/150?text=Pizza'),
+          _buildMenuItem('Burgers', 'https://via.placeholder.com/150?text=Burgers'),
+          _buildMenuItem('Sandwiches', 'https://via.placeholder.com/150?text=Sandwiches'),
+          _buildMenuItem('Tacos', 'https://via.placeholder.com/150?text=Tacos'),
+          _buildMenuItem('Pasta', 'https://via.placeholder.com/150?text=Pasta'),
+          _buildMenuItem('Salad', 'https://via.placeholder.com/150?text=Salad'),
+          _buildMenuItem('Drinks', 'https://via.placeholder.com/150?text=Drinks'),
+          _buildMenuItem('Tea', 'https://via.placeholder.com/150?text=Tea'),
+        ],
+      ),
     );
   }
 
@@ -92,21 +95,25 @@ class AboutTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RestaurantInfoWidget(restaurant: restaurant),
-          SizedBox(height: 16),
-          ImageCarousel(images: restaurant.pictures ?? []),
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'Founded over 50 years ago, ${restaurant.name} is probably the oldest Italian specialty restaurant in Karlsruhe. Since February 1, 2020, Felice and Giuseppe have taken over the Adria restaurant. They will continue the concept of Italian cuisine and thus maintain the Italian charm of the restaurant.',
-              style: TextStyle(fontSize: 16),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RestaurantInfoWidget(restaurant: restaurant),
+            SizedBox(height: 16),
+            ImageCarousel(images: restaurant.pictures ?? []),
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                restaurant.description ?? '',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -120,11 +127,11 @@ class RestaurantInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(8),
       child: Row(
         children: [
           CircleAvatar(
-            radius: 30,
+            radius: 25,
             backgroundImage: NetworkImage(restaurant.pictures?.first ?? 'https://via.placeholder.com/60?text=Logo'),
           ),
           SizedBox(width: 16),
@@ -153,7 +160,7 @@ class RestaurantInfoWidget extends StatelessWidget {
 
   Widget _buildInfoChip(String label, Color backgroundColor, Color textColor) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -180,7 +187,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
         Container(
           height: 200,
@@ -200,17 +207,21 @@ class _ImageCarouselState extends State<ImageCarousel> {
           ),
         ),
         SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            widget.images.length,
-            (index) => Container(
-              margin: EdgeInsets.symmetric(horizontal: 4),
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentPage == index ? Colors.black : Colors.grey,
+        Positioned(
+          bottom: 8,
+          left: 180,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              widget.images.length,
+              (index) => Container(
+                margin: EdgeInsets.symmetric(horizontal: 4),
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _currentPage == index ? Colors.black : Colors.white,
+                ),
               ),
             ),
           ),

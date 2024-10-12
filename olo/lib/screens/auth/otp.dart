@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:olo/main.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/screens/restaurants/restaurants.dart';
+
+import 'package:olo/providers/auth.dart';
+
 import 'package:olo/screens/auth/login.dart';
 import 'package:olo/screens/auth/saveaddress.dart';
 import 'package:olo/utlis/toast.dart';
@@ -21,7 +24,7 @@ class OtpPage extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpPage> {
   TextEditingController otpController = TextEditingController();
-
+  AuthNotifier authNotifier = AuthNotifier();
   bool isLoading = false;
   int timer = 60;
   bool enable = false;
@@ -54,18 +57,15 @@ class _OtpScreenState extends State<OtpPage> {
   }
 
   Future<void> _resendOtp() async {
+    setState(() {
+      isLoading = true;
+      enable = true;
+    });
     try {
-      if (widget.isRegister) {
-        await supabase.auth.resend(
-          type: OtpType.signup,
-          email: widget.email,
-        );
-      } else {
-        await supabase.auth.resend(
-          type: OtpType.magiclink,
-          email: widget.email,
-        );
-      }
+      await supabase.auth.resend(
+        type: ((widget.isRegister) ? OtpType.signup : OtpType.email),
+        email: widget.email,
+      );
     } on AuthException catch (error) {
       showToast(context, "Error", error.message, ToastificationType.error);
     } catch (error) {
@@ -83,39 +83,26 @@ class _OtpScreenState extends State<OtpPage> {
     });
 
     try {
-      if (!widget.isRegister) {
-        await supabase.auth.verifyOTP(
-            type: OtpType.magiclink,
-            token: otpController.text,
-            email: widget.email);
-      } else {
-        await supabase.auth.verifyOTP(
-            type: OtpType.email,
-            token: otpController.text,
-            email: widget.email);
-      }
-
+      await supabase.auth.verifyOTP(
+          type: ((widget.isRegister) ? OtpType.signup : OtpType.email),
+          
+          token: otpController.text,
+          email: widget.email);
+      authNotifier.setLoggedIn(true);
       if (widget.isRegister) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => SaveAddressPage()),
-            (Route<dynamic> route) => false);
+        context.go("/saveaddress");
       } else {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => RestaurantScreen()),
-            (Route<dynamic> route) => false);
+        context.go("/restaurants");
       }
     } on AuthException catch (error) {
       showToast(context, "Error", error.message, ToastificationType.error);
     } catch (error) {
+      print("Error: $error");
+      print(error);
       showToast(context, "Error", "Unexpected error occurred, try later.",
           ToastificationType.error);
-    } finally {
-      setState(() {
-        isLoading = false;
-        enable = true;
-      });
-      return true;
     }
+    return true;
   }
 
   @override

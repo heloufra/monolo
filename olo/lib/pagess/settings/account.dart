@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/services/clientService.dart';
-import 'package:olo/types/User.dart';
+import 'package:olo/models/user.dart';
+
 
 class Account extends StatefulWidget {
   @override
@@ -10,10 +10,10 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  late Future<User> user;
+  late Future<UserX> user;
   late var current;
   bool once = true;
-  ClientService clientService = ClientService();
+
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();

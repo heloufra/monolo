@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/screens/auth/markEntrance.dart';
-import 'package:olo/screens/restaurants/restaurants.dart';
 import 'package:olo/services/user.dart';
 import 'package:olo/utlis/toast.dart';
 import 'package:toastification/toastification.dart';
@@ -36,6 +35,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
     addressController.addListener(checkEnableSave);
     phoneController.addListener(checkEnableSave);
     _center = widget.center ?? LatLng(37.422131, -122.084801);
+    print("Center: $_center widget: ${widget.center}");
   }
 
   void _addCustomIcon() {
@@ -52,6 +52,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
   }
 
   Future<void> _getUserLocation() async {
+    print("Getting user location");
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -138,10 +139,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
         });
 
         if (error == null) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => RestaurantScreen()),
-          );
+          context.go("/restaurants");
         } else {
           showToast(context, "Error", error, ToastificationType.error);
           print(error);
@@ -188,12 +186,13 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
                 ),
                 myLocationButtonEnabled: false,
                 onTap: (LatLng latLng) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MapScreen(center: _center),
-                    ),
-                  );
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => MapScreen(center: _center),
+                  //   ),
+                  // );
+                  context.go('/markentrance', extra: _center);
                 },
                 markers: {
                   Marker(

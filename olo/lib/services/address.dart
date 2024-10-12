@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:olo/constants.dart';
-import 'package:olo/models/user.dart';
+import 'package:olo/models/address.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-
-class UserService {
+class AddressService {
   Future<String?> registerCoordinates(Map<String, dynamic> userData) async {
     final supabase = Supabase.instance.client;
     final jwtToken = supabase.auth.currentSession?.accessToken;
@@ -15,6 +14,7 @@ class UserService {
     }
 
     final url = Uri.parse('${Constants.baseUrl}/address/register/coordinates');
+
     try {
 
       final response = await http.post(
@@ -27,7 +27,7 @@ class UserService {
       );
 
       if (response.statusCode == 201) {
-        return null; // Success, no error
+        return null;
       } else {
         return _handleError(response.statusCode, response.body);
       }
@@ -36,7 +36,6 @@ class UserService {
     }
   }
 
-  
   Future<String?> addNewAddress(Map<String, dynamic> userData) async {
     final supabase = Supabase.instance.client;
     final jwtToken = supabase.auth.currentSession?.accessToken;
@@ -45,7 +44,7 @@ class UserService {
       return 'Authentication token missing. Please log in again.';
     }
 
-    final url = Uri.parse('${Constants.baseUrl}/address/register/coordinates');
+    final url = Uri.parse('${Constants.baseUrl}/address/create/coordinates');
     try {
 
       final response = await http.post(
@@ -58,7 +57,7 @@ class UserService {
       );
 
       if (response.statusCode == 201) {
-        return null; // Success, no error
+        return null; 
       } else {
         return _handleError(response.statusCode, response.body);
       }
@@ -67,45 +66,15 @@ class UserService {
     }
   }
 
-    Future<String?> register(Map<String, dynamic> userData) async {
+  Future<List<Address>> getAddresses() async {
     final supabase = Supabase.instance.client;
     final jwtToken = supabase.auth.currentSession?.accessToken;
 
     if (jwtToken == null) {
-      return 'Authentication token missing. Please log in again.';
+      throw 'Authentication token missing. Please log in again.';
     }
 
-    final url = Uri.parse('${Constants.baseUrl}/address/register');
-    try {
-
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $jwtToken',
-        },
-        body: jsonEncode(userData),
-      );
-
-      if (response.statusCode == 200) {
-        return null; // Success, no error
-      } else {
-        return _handleError(response.statusCode, response.body);
-      }
-    } catch (e) {
-      return 'Error sending user data: $e';
-    }
-  }
-
-  Future<UserX> getMe() async {
-    final supabase = Supabase.instance.client;
-    final jwtToken = supabase.auth.currentSession?.accessToken;
-
-    if (jwtToken == null) {
-      throw Exception('Authentication token missing. Please log in again.');
-    }
-
-    final url = Uri.parse('${Constants.baseUrl}/user/me');
+    final url = Uri.parse('${Constants.baseUrl}/address/self');
     try {
       final response = await http.get(
         url,
@@ -116,28 +85,28 @@ class UserService {
       );
 
       if (response.statusCode == 200) {
-        return UserX.fromMap(json.decode(response.body));
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((e) => Address.fromMap(e)).toList();
       } else {
-        print(response.body);
-        print(response.statusCode);
-        throw Exception('Error fetching user data, try again later.');
+        throw _handleError(response.statusCode, response.body);
       }
     } catch (e) {
-      throw Exception('Error fetching user data, try again later. $e');
+      throw 'Error fetching user data: $e';
     }
   }
 
-  Future<UserX> updateUser(Map<String, dynamic> userData) async {
+  Future<String?> updateAddress(Map<String, dynamic> userData, String id) async {
     final supabase = Supabase.instance.client;
     final jwtToken = supabase.auth.currentSession?.accessToken;
 
     if (jwtToken == null) {
-      throw Exception('Authentication token missing. Please log in again.');
+      return 'Authentication token missing. Please log in again.';
     }
 
-    final url = Uri.parse('${Constants.baseUrl}/user/update');
+    final url = Uri.parse('${Constants.baseUrl}/address/$id');
     try {
-      final response = await http.put(
+
+      final response = await http.patch(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -147,12 +116,41 @@ class UserService {
       );
 
       if (response.statusCode == 200) {
-        return UserX.fromMap(json.decode(response.body));
+        return null;
       } else {
-        throw Exception('Error fetching user data, try again later.');
+        return _handleError(response.statusCode, response.body);
       }
     } catch (e) {
-      throw Exception('Error fetching user data, try again later.');
+      return 'Error sending user data: $e';
+    }
+  }
+
+  Future<String?> deleteAddress(String id) async {
+    final supabase = Supabase.instance.client;
+    final jwtToken = supabase.auth.currentSession?.accessToken;
+
+    if (jwtToken == null) {
+      return 'Authentication token missing. Please log in again.';
+    }
+
+    final url = Uri.parse('${Constants.baseUrl}/address/$id');
+    try {
+
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $jwtToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return null;
+      } else {
+        return _handleError(response.statusCode, response.body);
+      }
+    } catch (e) {
+      return 'Error sending user data: $e';
     }
   }
 

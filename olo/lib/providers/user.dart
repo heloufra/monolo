@@ -1,27 +1,68 @@
 import 'package:flutter/foundation.dart';
 import 'package:olo/models/user.dart';
+import 'package:olo/services/user.dart';
 
-class UserProvider with ChangeNotifier {
-  User? _user;
+class UserProvider extends ChangeNotifier {
+  UserX? _user;
+  bool _isLoading = false;
+  String? _error;
+  DateTime? _lastFetchTime;
 
-  User? get user => _user;
+  UserService _userService = UserService();
 
-  void setUser(User user) {
-    _user = user;
-    notifyListeners();
+  UserX? get user => _user;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> fetchUserIfNeeded() async {
+    if (_shouldFetchData()) {
+      await _fetchUser();
+    }
   }
 
-  void clearUser() {
-    _user = null;
-    notifyListeners();
+  bool _shouldFetchData() {
+    if (_user == null || _lastFetchTime == null) {
+      return true;
+    }
+    final fiveMinutesAgo = DateTime.now().subtract(Duration(minutes: 15));
+    return _lastFetchTime!.isBefore(fiveMinutesAgo);
   }
 
-  // Add more user-related methods as needed, for example:
-  Future<void> updateUserProfile(Map<String, dynamic> data) async {
-    // Implement the logic to update user profile
-    // This might involve making an API call
-    // After successful update:
-    _user = User.fromMap({..._user!.toMap(), ...data});
+  Future<void> _fetchUser() async {
+    if (_isLoading) return;
+
+    _isLoading = true;
+    _error = null;
     notifyListeners();
+
+    try {
+      _user = await _userService.getMe() as UserX;
+      _lastFetchTime = DateTime.now();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> forceRefresh() async {
+    _lastFetchTime = null;
+    await _fetchUser();
+  }
+
+  Future<void> updateUser(Map<String, dynamic> userData) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _userService.updateUser(userData);
+      forceRefresh();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

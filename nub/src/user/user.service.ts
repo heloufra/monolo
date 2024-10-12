@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GetCurrentUser } from 'src/common/user.decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserUpdateDataDto, UserUpdateEmailDto, UserUpdatePhonelDto, UserVerifyEmailDto, UserVerifyPhoneDto } from './dto/user.dto';
+import { emit } from 'process';
 
 @Injectable()
 export class UserService {
@@ -12,6 +13,20 @@ export class UserService {
          return await this.prismaService.user.findUnique({
             where: {
                 id: user.id
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                phoneNumber: true,
+                role: true,
+                picture: true,
+                settings: true,
+                orders: true,
+                reviews: true,
+                addresses: true,
+                createdAt: true,
+                updatedAt: true,
             }
         });
 
@@ -44,6 +59,8 @@ export class UserService {
             data: {
                 name: data.name,
                 picture: data.pictureURL,
+                phoneNumber: data.phoneNumber,
+                email: data.email,
             },
             select: {
                 id: true,

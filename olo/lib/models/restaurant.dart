@@ -8,6 +8,7 @@ class Restaurant {
   String? address;
   String? email;
   String? phoneNumber;
+  String? description;
   List<String>? pictures;
   int? rating;
   List<Dish>? dishes;
@@ -25,6 +26,7 @@ class Restaurant {
     this.rating,
     this.dishes,
     this.reviews,
+    this.description,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : 
@@ -39,6 +41,7 @@ class Restaurant {
       'address': address,
       'email': email,
       'phoneNumber': phoneNumber,
+      'description': description,
       'pictures': pictures?.map((picture) => picture).toList(),
       'rating': rating,
       'reviews': reviews?.map((review) => review.toMap()).toList(),
@@ -54,6 +57,7 @@ class Restaurant {
       name: map['name'],
       address: map['address'],
       email: map['email'],
+      description: map['description'],
       phoneNumber: map['phoneNumber'],
       pictures: map['pictures'] != null ? List<String>.from(map['pictures'].map((picture) => picture)) : null,
       rating: map['rating'],

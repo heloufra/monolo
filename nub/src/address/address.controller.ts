@@ -14,9 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/role.decorator';
 import { GetCurrentUser } from 'src/common/user.decorator';
 
-/**
- * note: I need to add wall to prevent someone scrapping all users addresses.
- */
+
 @ApiTags('address')
 @Controller('address')
 export class AddressController {
