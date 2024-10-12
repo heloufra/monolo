@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-Widget oneOption({
+Widget multiOptions({
   required String title,
   required int price,
   required List<String> options,
-  required String? selectedOption,
-  required ValueChanged<String?> onOptionChanged,
+  required List<String> selectedOptions,
+  required ValueChanged<String?> onOptionChangedTrue,
+  required ValueChanged<String?> onOptionChangedFalse,
 }) {
   return Column(
     mainAxisSize: MainAxisSize.min,
@@ -30,15 +31,12 @@ Widget oneOption({
           borderRadius: BorderRadius.circular(5),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ...options.asMap().entries.map((entry) {
-              int idx = entry.key;
-              String option = entry.value;
+            ...options.map((String option) {
               return Column(
                 children: [
-                  RadioListTile<String>(
-                    activeColor: Colors.black,
+                  CheckboxListTile(
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -54,11 +52,17 @@ Widget oneOption({
                         ),
                       ],
                     ),
-                    value: option,
-                    groupValue: selectedOption,
-                    onChanged: onOptionChanged,
+                    value: selectedOptions.contains(option),
+                    onChanged: (bool? isChecked) {
+                      if (isChecked!) {
+                        onOptionChangedTrue(option);
+                      } else {
+                        onOptionChangedFalse(option);
+                      }
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,
                   ),
-                  if (idx != options.length - 1)
+                  if (option != options.last)
                     Container(
                       color: Colors.grey,
                       height: 0.3,

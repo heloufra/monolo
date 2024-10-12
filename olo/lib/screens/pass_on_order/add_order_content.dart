@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olo/components/order_list_item.dart';
+import 'order_details.dart';
 import 'package:olo/screens/pass_on_order/meal_details.dart';
 
 String mealName = 'Classic Burger';
@@ -19,31 +20,35 @@ class _AddOrderContentState extends State<AddOrderContent> {
       child: Column(
         children: [
           OrderListItem(
-              image: Icon(
-                Icons.fastfood,
-                size: 30,
-              ),
-              title: mealName,
-              price: '28 Dhs',
-              count: mealCount,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MealDetails(),
-                  ),
-                );
-              },
-              onPressedMinus: () {
-                setState(() {
-                  mealCount--;
-                });
-              },
-              onPressedPlus: () {
-                setState(() {
-                  mealCount++;
-                });
-              }),
+            image: Icon(
+              Icons.fastfood,
+              size: 30,
+            ),
+            title: mealName,
+            price: '28 Dhs',
+            count: mealCount,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MealDetails(),
+                ),
+              );
+            },
+            onPressedMinus: () {
+              setState(() {
+                mealCount--;
+              });
+            },
+            onPressedPlus: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const OrderDetails(),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
