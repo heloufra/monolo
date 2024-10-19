@@ -63,15 +63,15 @@ class _AddressPageState extends State<AddressPage> {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => EditAddressPage(address: address),
-                              //   ),
-                              // ).then((_) {
-                              //   // Refresh the address list after editing an address
-                              //   Provider.of<AddressProvider>(context, listen: false).fetchAddressesIfNeeded();
-                              // });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditAddressPage(address: address),
+                                ),
+                              ).then((_) {
+                                // Refresh the address list after editing an address
+                                Provider.of<AddressProvider>(context, listen: false).fetchAddressesIfNeeded();
+                              });
                             },
                           ),
                         );

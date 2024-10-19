@@ -5,7 +5,6 @@ import 'package:olo/providers/user.dart';
 import 'package:provider/provider.dart';
 import 'package:olo/models/user.dart';
 
-
 import 'dart:io';
 
 class ProfileScreen extends StatefulWidget {
@@ -43,8 +42,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('Profile'),
-          backgroundColor: Colors.white,
+          title: const Text('Profile',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.black,
         ),
         body: SingleChildScrollView(
           child: Consumer<UserProvider>(
@@ -73,7 +75,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: CircleAvatar(
                             radius: 12,
                             backgroundColor: Colors.black,
-                            child: Icon(Icons.add, size: 16, color: Colors.white),
+                            child:
+                                Icon(Icons.add, size: 16, color: Colors.white),
                           ),
                         ),
                       ),
@@ -100,7 +103,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Column(
                         children: [
                           _buildListTile('Account', () {
-                            GoRouter.of(context).go('/profile/account', extra: user);
+                            GoRouter.of(context)
+                                .go('/profile/account', extra: user);
                           }),
                           const SizedBox(height: 12),
                           _buildListTile('Address', () {

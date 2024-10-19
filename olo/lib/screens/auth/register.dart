@@ -120,6 +120,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
               // logo
               const Image(
+      
                 image: AssetImage('assets/images/logo.png'),
                 height: 100,
               ),

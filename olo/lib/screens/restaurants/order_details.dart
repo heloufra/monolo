@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olo/screens/pass_on_order/add_order.dart';
+import 'package:go_router/go_router.dart';
 import 'package:olo/components/one_option.dart';
 import 'package:olo/components/multi_options.dart';
 import '../admin_dashboard/options_page.dart' show options;
@@ -41,12 +41,7 @@ class _OrderDetailsState extends State<OrderDetails> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddOrder(),
-                  ),
-                );
+                 context.go("/restaurants/dish/details");
               },
               icon: const Icon(
                 Icons.clear,
@@ -121,10 +116,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                       
                     ),
                     onTap: () {
-                      Navigator.pop(
-                        context,
-                        mealCount,
-                      );
+                       context.go("/restaurants/dish/details");
                     },
                   ),
                 ),

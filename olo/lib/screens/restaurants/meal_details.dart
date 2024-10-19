@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:olo/screens/pass_on_order/add_order.dart';
 import 'package:olo/components/plus_minus_button.dart';
-import '../restaurants/add_order_content.dart' show mealName, mealCount;
+
+String mealName = 'Classic Burger';
+int mealCount = 0;
 
 class MealDetails extends StatefulWidget {
   const MealDetails({super.key});
@@ -28,12 +31,7 @@ class _MealDetailsState extends State<MealDetails> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddOrder(),
-                  ),
-                );
+                context.go("/restaurants/dish/details");
               },
               icon: const Icon(
                 Icons.clear,

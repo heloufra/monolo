@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:olo/constants.dart';
+import 'package:olo/utlis/constants.dart';
 import 'package:olo/models/user.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

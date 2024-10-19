@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:olo/components/continue.dart';
@@ -118,7 +119,7 @@ class _AccountState extends State<Account> {
         enable = false;
       });
     }
-     final userProvider = Provider.of<UserProvider>(context, listen: false);
+     final userProvider = await Provider.of<UserProvider>(context, listen: false);
     
     try {
       await userProvider.updateUser({
