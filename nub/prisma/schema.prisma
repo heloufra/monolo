@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
@@ -53,6 +53,8 @@ model User {
   settings    Settings?
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
+  deleted     Boolean?  @default(false)
+  deletedAt   DateTime?
 
   @@map("users")
 }
@@ -60,14 +62,14 @@ model User {
 model Restaurant {
   id          String    @id @default(uuid())
   name        String
-  addressId   String? @unique
+  addressId   String?   @unique
   address     Address?  @relation(fields: [addressId], references: [id])
-  email       String   @unique
+  email       String    @unique
   phoneNumber String?   @unique
   logo        String?
-  pictures     String[]
+  pictures    String[]
   rating      Float?
-  description  String?
+  description String?
   dishes      Dish[]
   orders      Order[]
   reviews     Review[]
@@ -139,20 +141,20 @@ model Review {
 }
 
 model Address {
-  id           String      @id @default(uuid())
-  name         String
-  street       String?
-  city         String?
-  state        String?
-  country      String?
-  postalCode   String?
-  latitude     Float?
-  longitude    Float?
-  userId       String?
-  user         User?       @relation(fields: [userId], references: [id])
-  restaurant  Restaurant?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id         String      @id @default(uuid())
+  name       String
+  street     String?
+  city       String?
+  state      String?
+  country    String?
+  postalCode String?
+  latitude   Float?
+  longitude  Float?
+  userId     String?
+  user       User?       @relation(fields: [userId], references: [id])
+  restaurant Restaurant?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
   @@map("addresses")
 }
@@ -160,9 +162,13 @@ model Address {
 model Settings {
   id                     String                 @id @default(uuid())
   userId                 String                 @unique
-  notificationPreference NotificationPreference @default(EMAIL)
   darkMode               Boolean                @default(false)
-  enableDataCollection   Boolean                @default(true)
+  locationEnabled        Boolean                @default(false)
+  dataSharingEnabled     Boolean                @default(true)
+  orderUpdates           Boolean                @default(true)
+  promotions             Boolean                @default(true)
+  deliveryStatus         Boolean                @default(true)
+  emailNotifications     Boolean                @default(true)
   user                   User                   @relation(fields: [userId], references: [id])
   createdAt              DateTime?              @default(now())
   updatedAt              DateTime?              @updatedAt

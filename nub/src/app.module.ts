@@ -9,13 +9,13 @@ import { UserModule } from './user/user.module';
 import { APP_FILTER, APP_GUARD, HttpAdapterHost } from '@nestjs/core';
 import { SupabaseAuthGuard } from './auth/guards/supa.guard';
 import { RolesGuard } from './auth/guards/role.guard';
-import { SettingsModule } from './settings/settings.module';
 import { AddressModule } from './address/address.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { MenuModule } from './menu/menu.module';
 import { OrdersModule } from './orders/orders.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PrismaClientExceptionFilter, PrismaModule } from 'nestjs-prisma';
+import { SettingModule } from './setting/setting.module';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { PrismaClientExceptionFilter, PrismaModule } from 'nestjs-prisma';
       rootPath: join(__dirname, '..', 'public'),
     }),
     UserModule,
-    SettingsModule,
+    SettingModule,
     AddressModule,
     RestaurantModule,
     MenuModule,

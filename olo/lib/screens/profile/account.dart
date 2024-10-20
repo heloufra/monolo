@@ -1,14 +1,12 @@
-import 'dart:async';
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 import 'package:olo/components/continue.dart';
-import 'package:olo/main.dart';
 import 'package:olo/models/user.dart';
 import 'package:olo/providers/user.dart';
-import 'package:olo/screens/profile/profile.dart';
 import 'package:olo/services/user.dart';
 import 'package:olo/utlis/toast.dart';
+import 'package:olo/widgets/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 
@@ -46,8 +44,7 @@ class _AccountState extends State<Account> {
   }
 
   void setData() async {
-    print(widget.user);
-    current =  widget.user;
+    current = widget.user;
     nameController.text = current.name;
     emailController.text = current.email;
     phoneController.text = current.phoneNumber;
@@ -94,15 +91,10 @@ class _AccountState extends State<Account> {
 
   void checkEnableSave() {
     if (nameController.text.isNotEmpty &&
-            emailController.text.isNotEmpty &&
-            phoneController.text.isNotEmpty &&
-            !showErrorEmail &&
-            !showErrorPhone
-        // &&
-        // !(current.name == nameController.text &&
-        //     current.email == emailController.text &&
-        //     current.phone == phoneController.text)
-        ) {
+        emailController.text.isNotEmpty &&
+        phoneController.text.isNotEmpty &&
+        !showErrorEmail &&
+        !showErrorPhone) {
       setState(() {
         enable = true;
       });
@@ -119,16 +111,16 @@ class _AccountState extends State<Account> {
         enable = false;
       });
     }
-     final userProvider = await Provider.of<UserProvider>(context, listen: false);
-    
+    final userProvider =
+        await Provider.of<UserProvider>(context, listen: false);
+
     try {
       await userProvider.updateUser({
         "name": nameController.text,
         "email": emailController.text,
         "phoneNumber": phoneController.text,
-        "pictureURL": userProvider.user?.picture ?? '',}
-      );
-
+        "pictureURL": userProvider.user?.picture ?? '',
+      });
 
       showToast(context, "Success", "Account updated successfully!",
           ToastificationType.success);
@@ -156,74 +148,41 @@ class _AccountState extends State<Account> {
             Navigator.pop(context);
           },
         ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.grey.shade300,
+            height: 1.0,
+          ),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Full Name', style: TextStyle(fontSize: 16)),
             SizedBox(height: 8),
-            TextField(
+            CustomTextField(
+              label: 'Full Name',
               controller: nameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Full Name',
-              ),
-              onChanged: (value) => checkEnableSave(),
+              onChanged: checkEnableSave,
             ),
             SizedBox(height: 16),
-            Text('Email', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 8),
-            TextField(
+            CustomTextField(
+              label: 'Email',
               controller: emailController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Email',
-              ),
-              onChanged: (value) => checkErrorEmail(),
-            ),
-            SizedBox(height: 10),
-            showErrorEmail
-                ? Text(
-                    errorMessageEmail,
-                    style: TextStyle(color: Colors.red),
-                  )
-                : SizedBox(),
-            SizedBox(height: 6),
-            Text('Phone number', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                Container(
-                  width: 90,
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                    value: '+212',
-                    items: ['+212'].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (value) => checkErrorEmail(),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: TextField(
-                    controller: phoneController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Phone number',
-                    ),
-                  ),
-                ),
-              ],
+              onChanged: checkErrorEmail,
+              keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 16),
+            CustomTextField(
+              label: 'Phone number',
+              controller: phoneController,
+              isPhoneField: true,
+              onChanged: checkErrorPhone,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
             showErrorPhone
                 ? Text(
                     errorMessagePhone,

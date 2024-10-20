@@ -1,34 +1,71 @@
-import 'package:flutter/foundation.dart';
-import 'package:olo/models/settings.dart';
+import 'package:flutter/material.dart';
+import 'package:olo/services/settings.dart';
+
 
 class SettingsProvider with ChangeNotifier {
-  Settings? _settings;
+  final SettingsService settingsService = SettingsService();
 
-  Settings? get settings => _settings;
+  bool locationEnabled = true;
+  bool dataSharingEnabled = true;
+  bool orderUpdatesEnabled = true;
+  bool promotionsEnabled = true;
+  bool emailNotificationsEnabled = true;
 
-  void setSettings(Settings settings) {
-    _settings = settings;
-    notifyListeners();
+  SettingsProvider() {
+    fetchSettings();
   }
 
-  Future<void> updateSettings(Map<String, dynamic> newSettings) async {
-    // Implement the logic to update settings (e.g., API call)
-    // After successful update:
-    _settings = Settings.fromMap({..._settings!.toMap(), ...newSettings});
-    notifyListeners();
-  }
-
-  Future<void> toggleDarkMode() async {
-    if (_settings != null) {
-      await updateSettings({'darkMode': !_settings!.darkMode});
+  Future<void> fetchSettings() async {
+    try {
+      final settings = await settingsService.getSettings();
+      locationEnabled = settings['locationEnabled'];
+      dataSharingEnabled = settings['dataSharingEnabled'];
+      orderUpdatesEnabled = settings['orderUpdates'];
+      promotionsEnabled = settings['promotions'];
+      emailNotificationsEnabled = settings['emailNotifications'];
+      notifyListeners();
+    } catch (error) {
+      print('Error fetching settings : $error');
     }
   }
 
-  Future<void> setNotificationPreference(NotificationPreference preference) async {
-    if (_settings != null) {
-      await updateSettings({'notificationPreference': preference.toString().split('.').last});
+  Future<void> updatePrivacySettings(bool location, bool dataSharing) async {
+    try {
+      await settingsService.updatePrivacySettings({
+        'locationEnabled': location,
+        'dataSharingEnabled': dataSharing,
+      });
+      locationEnabled = location;
+      dataSharingEnabled = dataSharing;
+
+      notifyListeners();
+    } catch (error) {
+      print('Error updating privacy settings: $error');
     }
   }
 
-  // Add more settings-related methods as needed
+  Future<void> updateNotificationSettings(bool orderUpdates, bool promotions, bool emailNotifications) async {
+    try {
+      await settingsService.updateNotificationSettings({
+        'orderUpdates': orderUpdates,
+        'promotions': promotions,
+        'emailNotifications': emailNotifications,
+      });
+      orderUpdatesEnabled = orderUpdates;
+      promotionsEnabled = promotions;
+      emailNotificationsEnabled = emailNotifications;
+      notifyListeners();
+    } catch (error) {
+      print('Error updating notification settings: $error');
+    }
+  }
+
+  Future<void> deleteUserAccount() async {
+    try {
+      await settingsService.deleteUserAccount();
+      notifyListeners();
+    } catch (error) {
+      print('Error deleting user account: $error');
+    }
+  }
 }

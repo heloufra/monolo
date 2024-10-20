@@ -13,12 +13,8 @@ class Continue extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          // divider 
-          const Divider(
-            color: Colors.black,
-            thickness: 0.1,
-                 indent: 0,
-          ),
+          
+          SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.fromLTRB(27, 14, 27, 14),
             decoration: BoxDecoration(

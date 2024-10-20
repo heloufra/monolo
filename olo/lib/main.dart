@@ -3,6 +3,7 @@ import 'package:olo/providers/address.dart';
 import 'package:olo/providers/auth.dart';
 import 'package:olo/providers/navbar.dart';
 import 'package:olo/providers/restaurant.dart';
+import 'package:olo/providers/settings.dart';
 import 'package:olo/providers/user.dart';
 import 'package:olo/utlis/router.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (context) => UserProvider()),
       ChangeNotifierProvider(create: (context) => AddressProvider()),
       ChangeNotifierProvider(create: (context) => NavBarVisibilityProvider()),
+      ChangeNotifierProvider(create: (context) => SettingsProvider()),
     ],
     child: const MyApp(),
   ));

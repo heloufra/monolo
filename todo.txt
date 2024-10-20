@@ -1,11 +1,10 @@
     ToDo list:
         * Router | done
-       
+        * Settings | doing
         * Restaurants screen
             - services
             - screens
             - widgets
         * Order's Providers
-        * Settings
         * Notifications
-         * Providers and cache 
+        * Providers and cache 

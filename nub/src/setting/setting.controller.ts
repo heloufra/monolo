@@ -1,16 +1,35 @@
-import { Controller, Body, Patch, Param } from '@nestjs/common';
+import { Controller, Body, Patch, Param, Get } from '@nestjs/common';
 import { SettingService } from './setting.service';
-import { UpdateSettingDto } from './dto/update-setting.dto';
+import { UpdateNotificationSettingDto, UpdatePrivacySettingDto, UpdateSettingDto } from './dto/update-setting.dto';
 import { Roles } from 'src/common/role.decorator';
 import { GetCurrentUser } from 'src/common/user.decorator';
 
-@Controller('setting')
+@Controller('settings')
 export class SettingController {
   constructor(private readonly settingService: SettingService) {}
 
-  @Roles(['costumer', 'delivery_person', 'admin'])
-  @Patch()
-  async update(@GetCurrentUser() user: any, @Body() updateSettingDto: UpdateSettingDto) {
-    return await this.settingService.update(user, updateSettingDto);
+  @Roles(['customer',])
+  @Get()
+  async getSettings(@GetCurrentUser() user: any) {
+    return await this.settingService.getSettings(user);
+  }
+
+  @Roles(['customer',])
+  @Patch('privacy')
+  async updatePrivacySettings(@GetCurrentUser() user: any, @Body() updateSettingDto: UpdatePrivacySettingDto) {
+    return await this.settingService.updatePrivacySettings(user, updateSettingDto);
+  }
+
+  @Roles(['customer',])
+  @Patch('notifications')
+  async updateNotificationSettings(@GetCurrentUser() user: any, @Body() updateSettingDto: UpdateNotificationSettingDto) {
+    console.log(updateSettingDto);
+    return await this.settingService.updateNotificationSettings(user, updateSettingDto);
+  }
+
+  @Roles(['customer',])
+  @Patch('delete')
+  async deleteUser(@GetCurrentUser() user: any) {
+    return await this.settingService.delete(user);
   }
 }
