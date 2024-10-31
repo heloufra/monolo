@@ -9,169 +9,409 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum UserRole {
-  CUSTOMER
-  DELIVERY_PERSON
-  ADMIN
-  RESTAURANT
 
-  @@map("userrole")
-}
-
-enum OrderStatus {
-  PENDING
-  CONFIRMED
-  PREPARING
-  OUT_FOR_DELIVERY
-  DELIVERED
-  CANCELLED
-
-  @@map("orderstatus")
-}
-
-enum NotificationPreference {
-  EMAIL
-  SMS
-  NONE
-
-  @@map("notificationpreference")
-}
 
 model User {
-  id          String    @id @default(uuid())
-  name        String?
-  // email and phone number are uniq and optional because we can have users who signed up with phone number or email
-  email       String?   @unique
-  phoneNumber String?   @unique
-  otp         String?
-  role        UserRole  @default(CUSTOMER)
-  picture     String?
-  orders      Order[]   @relation("CustomerOrders")
-  deliveries  Order[]   @relation("DeliveryPersonOrders")
-  reviews     Review[]
-  addresses   Address[]
-  settings    Settings?
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
-  deleted     Boolean?  @default(false)
-  deletedAt   DateTime?
+  id String @id @default(uuid())
+
+  email String @unique
+
+  phone String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  profile  UserProfile?
+  Settings Settings?
+
+  roles UserRole
+
+  addresses Address[]
+
+  asCustomer Order[] @relation("CustomerOrders")
+
+  asDriver Delivery[] @relation("DriverDeliveries")
 
   @@map("users")
 }
 
+
+model UserProfile {
+  id String @id @default(uuid())
+
+  name String
+
+  dateOfBirth DateTime?
+
+  avatarUrl String?
+
+  userId String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("userprofiles")
+}
+
+model Settings {
+  id                 String  @id @default(uuid())
+
+  darkMode           Boolean @default(false)
+
+  locationEnabled    Boolean @default(false)
+
+  dataSharingEnabled Boolean @default(true)
+
+  orderUpdates       Boolean @default(true)
+
+  promotions         Boolean @default(true)
+
+  deliveryStatus     Boolean @default(true)
+
+  emailNotifications Boolean @default(true)
+
+  createdAt DateTime? @default(now())
+
+  updatedAt DateTime? @updatedAt
+
+  userId String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("settings")
+}
+
+enum UserRole {
+  CUSTOMER
+  DELIVERY_PERSON
+  ADMIN
+
+  @@map("userrole")
+}
+
 model Restaurant {
-  id          String    @id @default(uuid())
-  name        String
-  addressId   String?   @unique
-  address     Address?  @relation(fields: [addressId], references: [id])
-  email       String    @unique
-  phoneNumber String?   @unique
-  logo        String?
-  pictures    String[]
-  rating      Float?
-  description String?
-  dishes      Dish[]
-  orders      Order[]
-  reviews     Review[]
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  id String @id @default(uuid())
+
+  name String
+
+  phone String?
+
+  email String @unique
+
+  rating Float?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  restaurantProfile RestaurantProfile?
+
+  address RestaurantAddress?
+
+  menuCategories MenuCategory[]
+
+  workingHours WorkingHours[]
+
+  orders Order[]
 
   @@map("restaurants")
 }
 
-model Dish {
-  id           String      @id @default(uuid())
-  name         String
-  description  String
-  price        Float
-  rating       Float
-  pictures     String[]
-  restaurantId String
-  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id])
-  orderItems   OrderItem[]
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  reviews      Review[]
+model RestaurantProfile {
+  id String @id @default(uuid())
 
-  @@map("dishes")
+  logoUrl String?
+
+  pictures String[]
+
+  description String?
+
+  restaurantId String @unique
+
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@map("restaurantprofiles")
 }
 
-model Order {
-  id               String      @id @default(uuid())
-  status           OrderStatus @default(PENDING)
-  total            Float
-  customerId       String
-  customer         User        @relation("CustomerOrders", fields: [customerId], references: [id])
-  deliveryPersonId String?
-  deliveryPerson   User?       @relation("DeliveryPersonOrders", fields: [deliveryPersonId], references: [id])
-  restaurantId     String
-  restaurant       Restaurant  @relation(fields: [restaurantId], references: [id])
-  orderItems       OrderItem[]
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+model RestaurantAddress {
+  id String @id @default(uuid())
 
+  street String
+
+  city String
+
+  state String
+
+  zipCode String
+
+  country String
+
+  latitude Float?
+
+  longitude Float?
+
+  restaurantId String @unique
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@map("restaurantaddresses")
+}
+
+model WorkingHours {
+  id String @id @default(uuid())
+
+  dayOfWeek Int 
+
+  openTime String 
+
+  closeTime String 
+
+  restaurantId String
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([restaurantId, dayOfWeek])
+    @@map("workinghours")
+}
+
+model MenuCategory {
+  id String @id @default(uuid())
+
+  name String
+
+  avatarUrl String?
+
+  restaurantId String
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  menuItems MenuItem[]
+
+  @@unique([restaurantId, name])
+  @@map("menucategories")
+}
+
+model MenuItem {
+  id String @id @default(uuid())
+
+  name String
+
+  pictures String[]
+
+  description String?
+
+  price Decimal @db.Decimal(10, 2)
+
+  image String?
+
+  isAvailable Boolean @default(true)
+
+  categoryId String
+
+  category MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  orderItems OrderItem[]
+
+  @@unique([categoryId, name])
+  @@map("menuitems")
+}
+
+
+model Order {
+  id String @id @default(uuid())
+
+  orderNumber String @unique
+
+  status OrderStatus
+
+  subtotal Decimal @db.Decimal(10, 2)
+
+  tax Decimal @db.Decimal(10, 2)
+
+  deliveryFee Decimal @db.Decimal(10, 2)
+
+  total Decimal @db.Decimal(10, 2)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  customerId String
+
+  customer User @relation("CustomerOrders", fields: [customerId], references: [id])
+
+  restaurantId String
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+
+  addressId String
+
+  address Address @relation("DeliveryAddress", fields: [addressId], references: [id])
+
+  orderItems OrderItem[]
+
+  delivery Delivery?
+
+  payment Payment?
   @@map("orders")
 }
 
-model OrderItem {
-  id       String @id @default(uuid())
-  quantity Int
-  dishId   String
-  dish     Dish   @relation(fields: [dishId], references: [id])
-  orderId  String
-  order    Order  @relation(fields: [orderId], references: [id])
+enum OrderStatus {
+  PENDING
 
-  @@map("order_items")
+  CONFIRMED
+
+  PREPARING
+
+  READY_FOR_PICKUP
+
+  IN_DELIVERY
+
+  DELIVERED
+
+  CANCELLED
 }
 
-model Review {
-  id           String     @id @default(uuid())
-  rating       Int        @default(1)
-  comment      String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  userId       String
-  user         User       @relation(fields: [userId], references: [id])
-  restaurantId String
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  dishId       String?
-  dish         Dish?      @relation(fields: [dishId], references: [id])
 
-  @@map("reviews")
+model OrderItem {
+  id String @id @default(uuid())
+
+  quantity Int
+
+  unitPrice Decimal @db.Decimal(10, 2)
+
+  totalPrice Decimal @db.Decimal(10, 2)
+
+  notes String?
+
+  orderId String
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  menuItemId String
+
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@unique([orderId, menuItemId])
+  @@map("orderitems")
+}
+
+
+model Delivery {
+  id String @id @default(uuid())
+
+  status DeliveryStatus
+
+  pickupTime DateTime?
+
+  deliveredTime DateTime?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  orderId String @unique
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  driverId String
+
+  driver User @relation("DriverDeliveries", fields: [driverId], references: [id])
+
+  @@map("deliveries")
+}
+
+enum DeliveryStatus {
+  PENDING
+
+  ASSIGNED
+
+  PICKED_UP
+
+  DELIVERED
+
+  FAILED
+
+  @@map("DeliveryStatus")
 }
 
 model Address {
-  id         String      @id @default(uuid())
-  name       String
-  street     String?
-  city       String?
-  state      String?
-  country    String?
-  postalCode String?
-  latitude   Float?
-  longitude  Float?
-  userId     String?
-  user       User?       @relation(fields: [userId], references: [id])
-  restaurant Restaurant?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id String @id @default(uuid())
 
-  @@map("addresses")
+  street String
+
+  city String
+
+  state String
+
+  zipCode String
+
+  country String
+
+  latitude Float?
+
+  longitude Float?
+
+  isDefault Boolean @default(false)
+
+  userId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  orders Order[] @relation("DeliveryAddress")
 }
 
-model Settings {
-  id                     String                 @id @default(uuid())
-  userId                 String                 @unique
-  darkMode               Boolean                @default(false)
-  locationEnabled        Boolean                @default(false)
-  dataSharingEnabled     Boolean                @default(true)
-  orderUpdates           Boolean                @default(true)
-  promotions             Boolean                @default(true)
-  deliveryStatus         Boolean                @default(true)
-  emailNotifications     Boolean                @default(true)
-  user                   User                   @relation(fields: [userId], references: [id])
-  createdAt              DateTime?              @default(now())
-  updatedAt              DateTime?              @updatedAt
 
-  @@map("settings")
+model Payment {
+  id String @id @default(uuid())
+
+  amount Decimal @db.Decimal(10, 2)
+
+  status PaymentStatus
+
+  provider String
+
+  paymentMethod PaymentMethod
+
+  transactionId String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  // Relations
+
+  orderId String @unique
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING
+
+  COMPLETED
+
+  FAILED
+
+  REFUNDED
+
+  @@map("PaymentStatus")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+
+  DEBIT_CARD
+
+  DIGITAL_WALLET
+
+  CASH
+
+  @@map("PaymentMethod")
 }
