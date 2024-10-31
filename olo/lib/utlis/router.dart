@@ -17,6 +17,7 @@ import 'package:olo/screens/profile/policy.dart';
 import 'package:olo/screens/profile/privacy.dart';
 import 'package:olo/screens/profile/profile.dart';
 import 'package:olo/screens/restaurants/restaurants.dart';
+import 'package:olo/screens/restaurants/select_address_page.dart';
 import 'package:olo/utlis/shell.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -26,7 +27,7 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
 final _authNotifier = AuthNotifier();
 
 final goRouter = GoRouter(
-  initialLocation: '/restaurants',
+  initialLocation: '/login',
   navigatorKey: _rootNavigatorKey,
   refreshListenable: _authNotifier,
   // redirect: (context, state) {
@@ -99,28 +100,33 @@ final goRouter = GoRouter(
                     return Account(user: user);
                   }),
               GoRoute(
-                path: '/address',
-                parentNavigatorKey: _rootNavigatorKey,
-                builder: (context, state) => AddressPage(),
-                routes: [
-                  GoRoute(
-                    path: '/edit',
-                    parentNavigatorKey: _rootNavigatorKey,
-                    builder: (context, state) {
-                      final Address? address = state.extra as Address;
-                      if (address == null) {
-                        return AddressPage();
-                      }
-                      return EditAddressPage(address: address);
-                    },
-                  ),
-                  GoRoute(
-                    path: '/new',
-                    parentNavigatorKey: _rootNavigatorKey,
-                    builder: (context, state) => NewAddressPage(),
-                  ),
-                ]
-              ),
+                  path: '/address',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => AddressPage(),
+                  routes: [
+                    GoRoute(
+                      path: '/edit',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) {
+                        final Address? address = state.extra as Address;
+                        if (address == null) {
+                          return AddressPage();
+                        }
+                        return EditAddressPage(address: address);
+                      },
+                    ),
+                    GoRoute(
+                      path: '/new',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) => NewAddressPage(),
+                    ),
+                    GoRoute(
+                        path: 'select',
+                        builder: (context, state) {
+                          return SelectAddressPage();
+                        },
+                        parentNavigatorKey: _rootNavigatorKey),
+                  ]),
               GoRoute(
                   path: '/privacy',
                   builder: (context, state) => PrivacyScreen(),

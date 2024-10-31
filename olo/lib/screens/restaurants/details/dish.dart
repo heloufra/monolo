@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:olo/models/dish.dart';
 import 'package:olo/screens/restaurants/order_dish.dart';
 
 
-class Dish extends StatefulWidget {
-  const Dish({super.key});
+class DishScreen extends StatefulWidget {
+  Dish dish;
+  DishScreen({super.key, required this.dish});
 
   @override
-  State<Dish> createState() => _Dish();
+  State<DishScreen> createState() => _Dish();
 }
 
-class _Dish extends State<Dish> with TickerProviderStateMixin {
-  String categoryName = 'Burgers';
+class _Dish extends State<DishScreen> with TickerProviderStateMixin {
+  late String categoryName;
+
+  @override
+  void initState() {
+    super.initState();
+    categoryName = widget.dish.category.name;
+  }
 
   @override
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 4, vsync: this);
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.black),

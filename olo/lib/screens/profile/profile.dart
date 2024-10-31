@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olo/providers/user.dart';
 import 'package:provider/provider.dart';
-import 'package:olo/models/user.dart';
 
 import 'dart:io';
 

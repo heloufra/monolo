@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:olo/providers/address.dart';
 import 'package:olo/providers/restaurant.dart';
+import 'package:olo/screens/restaurants/address.dart';
 import 'package:provider/provider.dart';
 import 'package:olo/models/restaurant.dart';
 import 'package:olo/screens/restaurants/details/restaurant_details.dart';
@@ -21,6 +23,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     // Fetch restaurants only if needed when the widget is first created
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<RestaurantProvider>().fetchRestaurantsIfNeeded();
+      context.read<AddressProvider>().fetchAddressesIfNeeded();
     });
   }
 
@@ -29,18 +32,27 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Restaurants',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+          child: const Text('Restaurants',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal)),
+        ),
         elevation: 0,
+        centerTitle: false,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(0.3), // Height of the border
+          child: Container(
+            color: Colors.grey, // Border color
+            height: 0.3, // Border height
+          ),
+        ),
       ),
       body: Column(
         children: [
           // Address bar (unchanged)
-          Container(
-            // ... (unchanged)
-          ),
+          AddressWidget(),
           const SizedBox(height: 16),
           // Restaurant list
           Expanded(
@@ -50,7 +62,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   return Center(child: CircularProgressIndicator());
                 } else if (provider.error != null) {
                   return Center(child: Text('Error: ${provider.error}'));
-                } else if (provider.restaurants == null || provider.restaurants!.isEmpty) {
+                } else if (provider.restaurants == null ||
+                    provider.restaurants!.isEmpty) {
                   return Center(child: Text('No restaurants found'));
                 } else {
                   return ListView.builder(
@@ -62,7 +75,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         name: restaurant.name,
                         description: restaurant.description ?? '',
                         distance: '${(index + 1) * 100} meters',
-                        deliveryTime: '${20 + (index * 5)}-${35 + (index * 5)} min',
+                        deliveryTime:
+                            '${20 + (index * 5)}-${35 + (index * 5)} min',
                         deliveryFee: 'Free Delivery',
                         imagePath: restaurant.pictures?[0] ??
                             'https://via.placeholder.com/150',
@@ -124,15 +138,15 @@ class RestaurantWidget extends StatelessWidget {
       },
       child: Card(
         color: Colors.white,
-        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         elevation: 4,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            // Restaurant image with logo
-            Stack(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Restaurant image
                 ClipRRect(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                   child: Image.network(
@@ -142,57 +156,68 @@ class RestaurantWidget extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-                Positioned(
-                  left: 16,
-                  bottom: -20,
-                  child: CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Colors.white,
-                    child: ClipOval(
-                      child: Image.network(
-                        logoPath,
-                        width: 40,
-                        height: 40,
-                        fit: BoxFit.cover,
+                // Restaurant details
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                      16, 40, 16, 16), // Moved down to fit logo positioning
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Restaurant name
+                      Text(
+                        name,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                    ),
+                      SizedBox(height: 4),
+                      // Restaurant description
+                      Text(
+                        description,
+                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 12),
+                      // Delivery details row
+                      Row(
+                        children: [
+                          _buildInfoChip(
+                              "Free Delivery", Colors.green[50]!, Colors.black),
+                          SizedBox(width: 8),
+                          _buildInfoChip(
+                              distance, Colors.grey[200]!, Colors.black),
+                          SizedBox(width: 8),
+                          _buildInfoChip(
+                              deliveryTime, Colors.grey[200]!, Colors.black),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-            
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Restaurant name
-                  Text(
-                    name,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            // Positioned logo at center-left, half on image and half on text
+            Positioned(
+              left: 16,
+              top: 140, // Adjusted to place the logo between the image and text
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border:
+                      Border.all(color: Colors.black, width: 2), // Black border
+                ),
+                child: CircleAvatar(
+                  radius: 36, // Adjusted size of the logo
+                  backgroundColor: Colors.white,
+                  child: ClipOval(
+                    child: Image.network(
+                      logoPath,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  SizedBox(height: 4),
-                  // Restaurant description
-                  Text(
-                    description,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 8),
-                  // Delivery details row
-                  Row(
-                    children: [
-                      _buildInfoChip(
-                          deliveryFee, Colors.green[50]!, Colors.green[700]!),
-                      SizedBox(width: 8),
-                      _buildInfoChip(
-                          deliveryTime, Colors.grey[200]!, Colors.black),
-                      SizedBox(width: 8),
-                      _buildInfoChip(distance, Colors.grey[200]!, Colors.black),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ],
@@ -203,16 +228,15 @@ class RestaurantWidget extends StatelessWidget {
 
   Widget _buildInfoChip(String label, Color backgroundColor, Color textColor) {
     return Container(
-      
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         label,
         style: TextStyle(
-            color: textColor, fontWeight: FontWeight.bold, fontSize: 12),
+            color: textColor, fontWeight: FontWeight.normal, fontSize: 12),
       ),
     );
   }

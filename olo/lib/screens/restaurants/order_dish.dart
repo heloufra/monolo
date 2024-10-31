@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:olo/components/order_list_item.dart';
-import 'package:olo/screens/restaurants/meal_details.dart';
 
 String mealName = 'Classic Burger';
 int mealCount = 0;

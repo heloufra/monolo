@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:olo/models/mockRestaurants.dart';
 import 'package:olo/models/review.dart';
 

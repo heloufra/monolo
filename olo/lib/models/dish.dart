@@ -1,3 +1,4 @@
+import 'package:olo/models/category.dart';
 import 'package:uuid/uuid.dart';
 
 class Dish {
@@ -8,6 +9,7 @@ class Dish {
   double rating;
   List<String> pictures;
   String restaurantId;
+  Category category;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -19,6 +21,7 @@ class Dish {
     required this.rating,
     required this.pictures,
     required this.restaurantId,
+    required this.category,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : 
@@ -36,6 +39,7 @@ class Dish {
       'rating': rating,
       'pictures': pictures,
       'restaurantId': restaurantId,
+      'category': category.toMap(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -49,6 +53,7 @@ class Dish {
       description: map['description'],
       price: map['price'],
       rating: map['rating'],
+      category: Category.fromMap(map['category']),
       pictures: List<String>.from(map['pictures']),
       restaurantId: map['restaurantId'],
       createdAt: DateTime.parse(map['createdAt']),

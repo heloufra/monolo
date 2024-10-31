@@ -40,6 +40,7 @@ class RestaurantProvider extends ChangeNotifier {
       _lastFetchTime = DateTime.now();
     } catch (e) {
       _error = e.toString();
+      print('Error fetching restaurants: $e');
     } finally {
       _isLoading = false;
       notifyListeners();

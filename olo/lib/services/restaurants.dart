@@ -1,109 +1,101 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:olo/utlis/constants.dart';
 import 'package:olo/models/restaurant.dart';
+import 'package:olo/utlis/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// restaurant_exception.dart
+class RestaurantException implements Exception {
+  final String message;
+  final int? statusCode;
+  
+  RestaurantException(this.message, [this.statusCode]);
+  
+  @override
+  String toString() => 'RestaurantException: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
+}
+
+// restaurant_service.dart
 
 class RestaurantService {
-  Future<List<Restaurant>?> getAllRestaurants() async {
-    final supabase = Supabase.instance.client;
-    final jwtToken = supabase.auth.currentSession?.accessToken;
+  final Duration timeout = const Duration(seconds: 10);
 
-    if (jwtToken == null) {
-      throw Exception('Authentication token missing. Please log in again.');
-    }
-
-    final url = Uri.parse('${Constants.baseUrl}/restaurant/all');
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $jwtToken',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        List<dynamic> jsonList = json.decode(response.body);
-        return jsonList.map((json) => Restaurant.fromMap(json)).toList();
-      } else {
-        throw Exception(_handleError(response.statusCode, response.body));
-      }
-    } catch (e) {
-      throw Exception('Error fetching restaurants: $e');
-    }
-  }
-
-  Future<Restaurant?> getRestaurantById(String id) async {
-    final supabase = Supabase.instance.client;
-    final jwtToken = supabase.auth.currentSession?.accessToken;
-
-    if (jwtToken == null) {
-      throw Exception('Authentication token missing. Please log in again.');
-    }
-
-    final url = Uri.parse('${Constants.baseUrl}/restaurant/$id');
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $jwtToken',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return Restaurant.fromMap(json.decode(response.body));
-      } else {
-        throw Exception(_handleError(response.statusCode, response.body));
-      }
-    } catch (e) {
-      throw Exception('Error fetching restaurant: $e');
-    }
-  }
-
-  Future<Restaurant?> updateRestaurant(String id, Map<String, dynamic> updateData) async {
-    final supabase = Supabase.instance.client;
-    final jwtToken = supabase.auth.currentSession?.accessToken;
-
-    if (jwtToken == null) {
-      throw Exception('Authentication token missing. Please log in again.');
-    }
-
-    final url = Uri.parse('${Constants.baseUrl}/restaurant/update');
-    try {
-      final response = await http.put(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $jwtToken',
-        },
-        body: jsonEncode(updateData),
-      );
-
-      if (response.statusCode == 200) {
-        return Restaurant.fromMap(json.decode(response.body));
-      } else {
-        throw Exception(_handleError(response.statusCode, response.body));
-      }
-    } catch (e) {
-      throw Exception('Error updating restaurant: $e');
-    }
-  }
-
-  String _handleError(int statusCode, String responseBody) {
+  /// Handles HTTP response status codes
+  String _handleError(int statusCode, String body) {
     switch (statusCode) {
-      case 400:
-        return 'Invalid data provided. Please check your input.';
       case 401:
-        return 'Unauthorized. Please log in again.';
+        return 'Unauthorized. Please login again.';
+      case 403:
+        return 'You don\'t have permission to access this resource.';
       case 404:
-        return 'Restaurant not found.';
+        return 'Restaurants data not found.';
       case 500:
-        return 'Server error. Please try again later.';
+        return 'Internal server error. Please try again later.';
       default:
-        return 'An unexpected error occurred: $statusCode';
+        try {
+          final error = json.decode(body);
+          return error['message'] ?? 'Unknown error occurred.';
+        } catch (_) {
+          return 'Error occurred while fetching restaurants.';
+        }
+    }
+  }
+
+  /// Validates the JWT token
+  String _validateToken() {
+    final supabase = Supabase.instance.client;
+    final jwtToken = supabase.auth.currentSession?.accessToken;
+    
+    if (jwtToken == null) {
+      throw RestaurantException('Authentication token missing. Please log in again.');
+    }
+    return jwtToken;
+  }
+
+  /// Gets all restaurants with proper error handling and type safety
+  Future<List<Restaurant>> getAllRestaurants() async {
+    try {
+      final jwtToken = _validateToken();
+      final url = Uri.parse('${Constants.baseUrl}/restaurant/all');
+      
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $jwtToken',
+            },
+          )
+          .timeout(
+            timeout,
+            onTimeout: () => throw RestaurantException('Request timed out. Please try again.'),
+          );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = json.decode(response.body);
+        
+        // Validate and transform the data
+        return jsonList.map((json) {
+          try {
+            return Restaurant.fromMap(json);
+          } catch (e) {
+            throw RestaurantException('Invalid restaurant data format: $e');
+          }
+        }).toList();
+      } else {
+        throw RestaurantException(
+          _handleError(response.statusCode, response.body),
+          response.statusCode,
+        );
+      }
+    } on TimeoutException {
+      throw RestaurantException('Connection timed out. Please check your internet connection.');
+    } on http.ClientException catch (e) {
+      throw RestaurantException('Network error: ${e.message}');
+    } catch (e) {
+      if (e is RestaurantException) rethrow;
+      throw RestaurantException('Unexpected error: $e');
     }
   }
 }

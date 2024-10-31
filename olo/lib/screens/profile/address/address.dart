@@ -41,38 +41,6 @@ class _AddressPageState extends State<AddressPage> {
       },
     );
 
-    // return showDialog<void>(
-    //   context: context,
-    //   barrierDismissible: false,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       backgroundColor: Colors.white,
-    //       title: Text('Confirm Deletion'),
-    //       content: SingleChildScrollView(
-    //         child: ListBody(
-    //           children: <Widget>[
-    //             Text('Are you sure you want to delete this address?'),
-    //           ],
-    //         ),
-    //       ),
-    //       actions: <Widget>[
-    //         TextButton(
-    //           child: Text('Cancel', style: TextStyle(color: Colors.black)),
-    //           onPressed: () {
-    //             Navigator.of(context).pop();
-    //           },
-    //         ),
-    //         TextButton(
-    //           child: Text('Delete', style: TextStyle(color: Colors.black)),
-    //           onPressed: () async {
-    //             Navigator.of(context).pop();
-    //             await _deleteAddress(context, provider, addressId);
-    //           },
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
   }
 
   Future<void> _deleteAddress(

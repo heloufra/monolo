@@ -4,6 +4,7 @@ import 'package:olo/services/address.dart';
 
 class AddressProvider extends ChangeNotifier {
   List<Address>? _addresses;
+  Address? _selectedAddress;
   bool _isLoading = false;
   String? _error;
   DateTime? _lastFetchTime;
@@ -11,6 +12,13 @@ class AddressProvider extends ChangeNotifier {
   final AddressService _addressService = AddressService();
 
   List<Address>? get addresses => _addresses;
+  Address? get selectedAddress => _selectedAddress;
+
+  set selectedAddress(Address? address) {
+    _selectedAddress = address;
+    notifyListeners();
+  }
+
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -36,6 +44,7 @@ class AddressProvider extends ChangeNotifier {
     try {
       _addresses = await _addressService.getAddresses();
       _lastFetchTime = DateTime.now();
+      _selectedAddress = _addresses!.first;
     } catch (e) {
       _error = e.toString();
     } finally {

@@ -1,128 +1,369 @@
 import 'package:flutter/material.dart';
 
-class NotificationScreen extends StatelessWidget {
-  final List<NotificationModel> notifications = [
-    NotificationModel(title: 'New message from John', description: 'Hey, check this out!', time: '1h ago', read: false),
-    NotificationModel(title: 'Your order has been shipped', description: 'Your package is on its way.', time: '2h ago', read: true),
-    NotificationModel(title: 'New comment on your post', description: 'Great post! Loved it!', time: '3h ago', read: false),
-    NotificationModel(title: 'Reminder: Meeting at 5 PM', description: 'Don\'t forget the team meeting.', time: '4h ago', read: true),
-    NotificationModel(title: 'Update available', description: 'A new update is available for your app.', time: '5h ago', read: false),
+class NotificationScreen extends StatefulWidget {
+  NotificationScreen({Key? key}) : super(key: key);
+
+  @override
+  _NotificationScreenState createState() => _NotificationScreenState();
+}
+
+class _NotificationScreenState extends State<NotificationScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+  List<NotificationModel> allNotifications = [
+    NotificationModel(
+      id: '1',
+      emoji: '🍔',
+      title: 'Order Confirmed',
+      description: 'Your burger is being prepared',
+      time: '2 min ago',
+      isRead: false,
+      type: NotificationType.order,
+    ),
+    NotificationModel(
+      id: '2',
+      emoji: '🚚',
+      title: 'On the Way',
+      description: 'Your order will arrive in 15 minutes',
+      time: '10 min ago',
+      isRead: true,
+      type: NotificationType.delivery,
+    ),
+    NotificationModel(
+      id: '3',
+      emoji: '💰',
+      title: 'Special Offer',
+      description: '20% off on your next pizza order',
+      time: '1h ago',
+      isRead: false,
+      type: NotificationType.promo,
+    ),
+    NotificationModel(
+      id: '4',
+      emoji: '⭐',
+      title: 'Rate Your Order',
+      description: 'How was your recent sushi?',
+      time: '2h ago',
+      isRead: false,
+      type: NotificationType.feedback,
+    ),
+    NotificationModel(
+      id: '5',
+      emoji: '🎉',
+      title: 'New Restaurant',
+      description: 'Try our latest Italian partner',
+      time: '1d ago',
+      isRead: true,
+      type: NotificationType.promo,
+    ),
   ];
 
-  NotificationScreen({Key? key}) : super(key: key);
+  List<NotificationModel> filteredNotifications = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, vsync: this);
+    filteredNotifications = allNotifications;
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterNotifications(String query) {
+    setState(() {
+      filteredNotifications = allNotifications
+          .where((notification) =>
+              notification.title.toLowerCase().contains(query.toLowerCase()) ||
+              notification.description
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          'Notifications',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.white, // Keep the app bar white
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        title: Text('Notifications'),
+        backgroundColor: Colors.white,
       ),
-      body: ListView.separated(
-        itemCount: notifications.length,
-        separatorBuilder: (context, index) => Divider(color: Colors.grey[300], height: 1),
-        itemBuilder: (context, index) {
-          final notification = notifications[index];
-          return NotificationItem(
-            title: notification.title,
-            description: notification.description,
-            time: notification.time,
-            isRead: notification.read,
-          );
-        },
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(child: _buildNotificationList()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationList() {
+    return ListView.builder(
+      itemCount: filteredNotifications.length,
+      itemBuilder: (context, index) {
+        final notification = filteredNotifications[index];
+        return NotificationItem(
+          notification: notification,
+          onTap: () => _openNotificationDetails(notification),
+        );
+      },
+    );
+  }
+
+  void _openNotificationDetails(NotificationModel notification) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            NotificationDetailsPage(notification: notification),
       ),
     );
   }
 }
 
 class NotificationItem extends StatelessWidget {
-  final String title;
-  final String description;
-  final String time;
-  final bool isRead;
+  final NotificationModel notification;
+  final VoidCallback onTap;
 
   const NotificationItem({
     Key? key,
-    required this.title,
-    required this.description,
-    required this.time,
-    required this.isRead,
+    required this.notification,
+    required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isRead ? Colors.grey[100] : Color.fromRGBO(23, 20, 39, 0.1), // Lightened version of the chosen color for unread
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: Colors.white,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildEmojiContainer(),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTitle(),
+                    SizedBox(height: 4),
+                    Text(
+                      notification.description,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                    SizedBox(height: 8),
+                    _buildFooter(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-        child: Row(
+      ),
+    );
+  }
+
+  Widget _buildEmojiContainer() {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Center(
+        child: Text(notification.emoji, style: TextStyle(fontSize: 24)),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            notification.title,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+        if (!notification.isRead)
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildFooter() {
+    return Row(
+      children: [
+        Icon(Icons.access_time, size: 14, color: Colors.grey),
+        SizedBox(width: 4),
+        Text(
+          notification.time,
+          style: TextStyle(fontSize: 12, color: Colors.grey),
+        ),
+        Spacer(),
+        _buildTypeChip(),
+      ],
+    );
+  }
+
+  Widget _buildTypeChip() {
+    Color chipColor;
+    String label;
+
+    switch (notification.type) {
+      case NotificationType.order:
+        chipColor = Colors.green;
+        label = 'Order';
+        break;
+      case NotificationType.delivery:
+        chipColor = Colors.orange;
+        label = 'Delivery';
+        break;
+      case NotificationType.promo:
+        chipColor = Colors.purple;
+        label = 'Promo';
+        break;
+      case NotificationType.feedback:
+        chipColor = Colors.blue;
+        label = 'Feedback';
+        break;
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: chipColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+            fontSize: 10, color: chipColor, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class NotificationDetailsPage extends StatelessWidget {
+  final NotificationModel notification;
+
+  const NotificationDetailsPage({Key? key, required this.notification})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text('Notification Details'),
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Circular icon indicating unread status
-            if (!isRead)
-              Container(
-                width: 12,
-                height: 12,
+            Center(
+              child: Container(
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   shape: BoxShape.circle,
-                  color: Color.fromRGBO(23, 20, 39, 1), // RGB color for the unread dot
                 ),
-                margin: EdgeInsets.only(top: 6),
-              ),
-            if (isRead)
-              Icon(Icons.check_circle, color: Colors.greenAccent, size: 18), // Check icon for read notifications
-            SizedBox(width: 16),
-            // Notification content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: isRead ? FontWeight.w400 : FontWeight.bold,
-                      color: Color.fromRGBO(23, 20, 39, 1), // Main RGB color for the text
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    time,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ],
+                child: Center(
+                  child:
+                      Text(notification.emoji, style: TextStyle(fontSize: 40)),
+                ),
               ),
             ),
+            SizedBox(height: 24),
+            Text(
+              notification.title,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              notification.description,
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Received: ${notification.time}',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            SizedBox(height: 24),
+            _buildActionButton(context),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context) {
+    String buttonText;
+    VoidCallback onPressed;
+
+    switch (notification.type) {
+      case NotificationType.order:
+        buttonText = 'View Order';
+        onPressed = () {
+          // Navigate to order details
+        };
+        break;
+      case NotificationType.delivery:
+        buttonText = 'Track Delivery';
+        onPressed = () {
+          // Open delivery tracking
+        };
+        break;
+      case NotificationType.promo:
+        buttonText = 'Use Promo';
+        onPressed = () {
+          // Apply promo code
+        };
+        break;
+      case NotificationType.feedback:
+        buttonText = 'Leave Feedback';
+        onPressed = () {
+          // Open feedback form
+        };
+        break;
+    }
+
+    return SizedBox(
+      width: double.infinity,
+
+      child: ElevatedButton(
+        child: Text(buttonText),
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: Colors.white,
         ),
       ),
     );
@@ -130,15 +371,28 @@ class NotificationItem extends StatelessWidget {
 }
 
 class NotificationModel {
+  final String id;
+  final String emoji;
   final String title;
   final String description;
   final String time;
-  final bool read;
+  final bool isRead;
+  final NotificationType type;
 
   NotificationModel({
+    required this.id,
+    required this.emoji,
     required this.title,
     required this.description,
     required this.time,
-    this.read = false,
+    required this.isRead,
+    required this.type,
   });
+}
+
+enum NotificationType {
+  order,
+  delivery,
+  promo,
+  feedback,
 }

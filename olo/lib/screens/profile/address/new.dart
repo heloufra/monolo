@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +8,6 @@ import 'package:olo/widgets/textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:olo/components/continue.dart';
 import 'package:olo/utlis/toast.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:toastification/toastification.dart';
 
 class NewAddressPage extends StatefulWidget {

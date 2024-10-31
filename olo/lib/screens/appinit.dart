@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:olo/providers/address.dart';
-import 'package:olo/providers/appinit.dart';
 import 'package:olo/providers/auth.dart';
 import 'package:olo/providers/restaurant.dart';
 import 'package:olo/providers/settings.dart';
