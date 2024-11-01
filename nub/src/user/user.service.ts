@@ -9,14 +9,14 @@ export class UserService {
     constructor (private readonly prismaService: PrismaService) {}
     
 
-    async findOne(user: any) {
+    async findOne(id: string) {
          return await this.prismaService.user.findUnique({
             where: {
-                id: user.id
+                id: id
             },
             select: {
                 id: true,
-                name: true,
+               
                 email: true,
                 phoneNumber: true,
                 role: true,

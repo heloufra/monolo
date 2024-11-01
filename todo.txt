@@ -8,3 +8,109 @@
             - widgets
         * Order's Providers
         * Notifications
+
+
+
+
+
+# User Management
+/user/:id
+  - GET    (Get user with profile and settings)
+  - PUT    (Update user details)
+  - DELETE (Delete user)
+
+/user/me
+  - GET    (Get current user profile)
+  - PUT    (Update current user profile)
+
+/user/all
+  - GET    (Get all users - admin only)
+
+/user/:id/settings
+  - GET    (Get user settings)
+  - PUT    (Update user settings)
+
+/user/:id/addresses
+  - GET    (Get user addresses)
+  - POST   (Add new address)
+
+/user/:id/addresses/:addressId
+  - PUT    (Update address)
+  - DELETE (Delete address)
+
+# Restaurant Management
+/restaurants
+  - GET    (Get all restaurants)
+  - POST   (Create new restaurant - admin)
+
+/restaurants/:id
+  - GET    (Get restaurant with profile and address)
+  - PUT    (Update restaurant)
+  - DELETE (Delete restaurant)
+
+/restaurants/:id/profile
+  - GET    (Get restaurant profile)
+  - PUT    (Update restaurant profile)
+
+/restaurants/:id/working-hours
+  - GET    (Get working hours)
+  - POST   (Add working hours)
+  - PUT    (Update working hours)
+
+# Menu Management
+/restaurants/:id/categories
+  - GET    (Get all categories)
+  - POST   (Create category)
+
+/restaurants/:id/categories/:categoryId
+  - PUT    (Update category)
+  - DELETE (Delete category)
+
+/restaurants/:id/categories/:categoryId/items
+  - GET    (Get items in category)
+  - POST   (Add item to category)
+
+/restaurants/:id/categories/:categoryId/items/:itemId
+  - PUT    (Update menu item)
+  - DELETE (Delete menu item)
+
+# Order Management
+/orders
+  - POST   (Create new order)
+  - GET    (Get all orders - admin only)
+
+/orders/:id
+  - GET    (Get order details)
+  - PUT    (Update order status)
+
+/user/:id/orders
+  - GET    (Get user's orders)
+
+/restaurants/:id/orders
+  - GET    (Get restaurant orders)
+
+# Delivery Management
+/deliveries
+  - GET    (Get all deliveries - admin only)
+  - POST   (Create new delivery)
+
+/deliveries/:id
+  - GET    (Get delivery details)
+  - PUT    (Update delivery status)
+
+/user/:id/deliveries
+  - GET    (Get driver's deliveries)
+
+# Payment Management
+/orders/:id/payment
+  - POST   (Create payment)
+  - GET    (Get payment details)
+  - PUT    (Update payment status)
+
+# Search and Filters
+/restaurants/search
+  - GET    (Search by name, rating, isActive)
+
+/restaurants/nearby
+  - GET    (Get restaurants by location)
+

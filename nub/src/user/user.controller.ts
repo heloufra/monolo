@@ -1,13 +1,9 @@
-import { Body, Controller, Delete, Get, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetCurrentUser } from 'src/common/user.decorator';
 import { Roles } from 'src/common/role.decorator';
 import { UserUpdateDataDto } from './dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
-
-/*
- * for updating user email and phone number we take the request body and update the user information using supabasd api
- */
 
 @ApiTags('user')
 @Controller('user')
@@ -21,7 +17,7 @@ export class UserController {
   }
 
   @Roles(['customer', 'delivery_person', 'admin'])
-  @Get('me')
+  @Get('')
   async getUser(@GetCurrentUser() user: any) {
     return await this.userService.findOne(user);
   }
@@ -30,7 +26,7 @@ export class UserController {
    * for updating name and user picture url
    */
   @Roles(['customer', 'delivery_person', 'admin'])
-  @Put('update')
+  @Put('')
   async updateUser(
     @GetCurrentUser() user: any,
     @Body() data: UserUpdateDataDto,
@@ -85,4 +81,14 @@ export class UserController {
   // ) {
   //   return await this.verifyPhone(user, data);
   // }
+
+  @Roles(['customer', 'delivery_person', 'admin'])
+  @Get(':id')
+  async findone(
+    @GetCurrentUser() user: any,
+    @Param() id: string
+  ) {
+    return await this.userService.updateUser(user, data);
+  }
+
 }

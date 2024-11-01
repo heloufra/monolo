@@ -173,7 +173,7 @@ model WorkingHours {
   restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 
   @@unique([restaurantId, dayOfWeek])
-    @@map("workinghours")
+  @@map("workinghours")
 }
 
 model MenuCategory {
@@ -342,15 +342,15 @@ enum DeliveryStatus {
 model Address {
   id String @id @default(uuid())
 
-  street String
+  street String?
 
-  city String
+  city String?
 
-  state String
+  state String?
 
-  zipCode String
+  zipCode String?
 
-  country String
+  country String?
 
   latitude Float?
 
