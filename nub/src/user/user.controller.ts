@@ -10,29 +10,29 @@ import { ApiTags } from '@nestjs/swagger';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Roles(['admin'])
-  @Get('all')
-  async getAllUsers() {
-    return await this.userService.findAll();
-  }
+  // @Roles(['admin'])
+  // @Get('all')
+  // async getAllUsers() {
+  //   return await this.userService.findAll();
+  // }
 
   @Roles(['customer', 'delivery_person', 'admin'])
-  @Get('')
-  async getUser(@GetCurrentUser() user: any) {
-    return await this.userService.findOne(user);
+  @Get(':id')
+  async getUser(@GetCurrentUser() user: any, @Param('id') id: string) { 
+    return await this.userService.findOne(id);
   }
 
   /*
    * for updating name and user picture url
    */
-  @Roles(['customer', 'delivery_person', 'admin'])
-  @Put('')
-  async updateUser(
-    @GetCurrentUser() user: any,
-    @Body() data: UserUpdateDataDto,
-  ) {
-    return await this.userService.updateUser(user, data);
-  }
+  // @Roles(['customer', 'delivery_person', 'admin'])
+  // @Put('')
+  // async updateUser(
+  //   @GetCurrentUser() user: any,
+  //   @Body() data: UserUpdateDataDto,
+  // ) {
+  //   return await this.userService.updateUser(user, data);
+  // }
 
   /*
    * for updating email
@@ -82,13 +82,13 @@ export class UserController {
   //   return await this.verifyPhone(user, data);
   // }
 
-  @Roles(['customer', 'delivery_person', 'admin'])
-  @Get(':id')
-  async findone(
-    @GetCurrentUser() user: any,
-    @Param() id: string
-  ) {
-    return await this.userService.updateUser(user, data);
-  }
+  // @Roles(['customer', 'delivery_person', 'admin'])
+  // @Get(':id')
+  // async findone(
+  //   @GetCurrentUser() user: any,
+  //   @Param() id: string
+  // ) {
+  //   return await this.userService.updateUser(user, data);
+  // }
 
 }
